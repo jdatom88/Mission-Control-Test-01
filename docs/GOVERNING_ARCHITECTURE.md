@@ -1,0 +1,91 @@
+# Mission Control OS — Governing Architecture
+
+## Purpose
+
+Mission Control OS is a governed personal executive operating system designed to reduce friction between knowing, deciding, and doing.
+
+This document summarizes the implementation-relevant architecture already established in Mission Control Development. It is not a replacement for the full constitutional charters; it is the engineering handoff required to keep implementation aligned.
+
+## Core design laws
+
+### Human Agency First
+Mission Control may observe, recommend, and prepare before execution. Execution requires appropriate user authorization unless a class of action has been explicitly delegated.
+
+### Progressive Automation
+Observe → Recommend → Prepare → Approve → Execute → Learn.
+
+### Reliability
+Fail loudly. Never fake completion. Never present an artifact, connector action, or external write as completed unless it is verified.
+
+### Friction Reduction
+Every capability should reduce cognitive, operational, or administrative friction. Prefer eliminating a step over automating it, automating over simplifying, simplifying over guiding, and guiding over merely informing.
+
+### Commodity Capability Reuse
+Before building a capability, search for a mature, lightweight, maintained library, skill, connector, package, or open standard that solves the commodity portion of the problem. Mission Control should build only the intelligence and integration layer that makes the capability uniquely useful.
+
+### Solo-Operator Constraint
+Prefer small scripts, simple files, replaceable components, and infrastructure that a single part-time maintainer can understand and recover after time away.
+
+## Four implementation layers
+
+1. **Knowledge Layer** — charters, packets, configuration, user/domain state.
+2. **Retrieval Layer** — connectors and adapters that pull or normalize external data.
+3. **Reasoning Layer** — synthesis, scoring, prioritization, recommendation logic.
+4. **Output Layer** — briefings, reports, files, actions, and user-facing artifacts.
+
+Do not prematurely split decision, execution, or learning into independent services unless real complexity requires it.
+
+## Shared capability rule
+
+Subsystems should consume centralized capabilities rather than independently reimplementing commodity behavior.
+
+Current example:
+
+Mission Control subsystem → canonical event object → Calendar Service → direct calendar connector when available OR `icalendar` ICS adapter as universal fallback → validation → verified result.
+
+## Connector state model
+
+Mission Control must distinguish at least:
+
+- connected + authorized + data found
+- connected + authorized + no matching data
+- connected + insufficient scope
+- connected + wrong account
+- authentication expired
+- connector unavailable
+- execution failure
+- unknown
+
+Do not collapse these conditions into a generic “not connected” message.
+
+## Calendar architecture
+
+All Mission Control calendar-producing subsystems must route through the centralized Calendar Service.
+
+The briefing/reasoning layer must not construct raw ICS text.
+
+Preferred execution path:
+
+Mission Control event → validate → authorized calendar connector → verify creation.
+
+Fallback path:
+
+Mission Control event → validate → ICS adapter → `icalendar` → parse-back validation → semantic/artifact checks → verified `.ics` file.
+
+The phrase “Download ICS” must never be displayed unless a real verified artifact exists.
+
+## Implementation sequencing
+
+Build vertical slices that prove value end to end before broadening the system.
+
+Current Stage 1 order:
+
+1. Calendar Service vertical slice
+2. Connector state/health orchestration
+3. Direct Google Calendar path
+4. One briefing path that consumes shared capabilities
+5. Additional connectors and domain packets only after the first slice is reliable
+
+## Architecture conflict rule
+
+Implementation sessions may fix defects and fill narrowly required technical gaps, but they must not invent or redefine Mission Control constitutional architecture. When implementation reveals a material architectural conflict, stop and surface the conflict to Mission Control Development for resolution.
