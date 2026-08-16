@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 3 — governed briefing-to-calendar vertical slice, acceptance complete.
+Stage 4 — persistent proposal, approval, and audit state prototype.
 
 ## Current milestone
 
-Design the smallest persistent proposal, approval, and audit-state boundary for Stage 4 before expanding into the full briefing engine or live retrieval connectors.
+Validate the Stage 4 SQLite-backed persistence and restart/recovery boundary defined in GitHub Issue #7 before expanding into the full briefing engine or live retrieval connectors.
 
 ## Implemented
 
@@ -48,6 +48,17 @@ Design the smallest persistent proposal, approval, and audit-state boundary for 
 - Authorized Stage 3 live acceptance event created on the primary Google Calendar for August 27, 2026, from 2:00–3:00 PM `America/Los_Angeles`, independently read back by provider ID, and found active in a bounded search
 - User confirmed the Stage 3 acceptance event was visible; it remains active until the user deletes it
 - Briefing Calendar Proposal Workflow promoted from Prototype to Tested on combined regression, synthetic lifecycle, provider read-back, active-search, and user-visible evidence
+- Stage 3 PR #5 merged into canonical `main`; GitHub Issue #4 closed with acceptance evidence
+- Stage 4 persistence decision comparing structured files, SQLite, and hosted relational storage
+- Replaceable `CalendarProposalStore` protocol owned by Mission Control
+- Thin SQLite adapter using Python's maintained standard library, schema versioning, atomic transitions, and optimistic version/status checks
+- Durable proposal, source, rationale, event, timezone, decision, audit, and execution-receipt restoration
+- Approval persisted as `execution_pending` before external execution; interrupted operations are quarantined from the active approval queue
+- Explicit duplicate-safe recovery contract; unsupported recovery performs no retry and fails loudly
+- Fail-loud corrupt, foreign, incompatible, incomplete, and unavailable-state handling
+- Fifteen focused Stage 4 persistence tests; full regression suite passes 41 tests
+- Reproducible Stage 4 five-process runtime harness covering prepare/defer, restore/edit, approval-before-execution, interruption, restart, duplicate-safe recovery, and final receipt verification
+- Stage 4 separate-process assertion gate passed with zero live calendar mutations
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -56,6 +67,7 @@ Design the smallest persistent proposal, approval, and audit-state boundary for 
 - Connector state model
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
+- Briefing Calendar Persistent State is Prototype; automated and separate-process synthetic acceptance pass, while canonical review/CI and deployment durability are pending
 
 ## Blockers
 
@@ -63,16 +75,18 @@ Design the smallest persistent proposal, approval, and audit-state boundary for 
 - No remaining blocker for Stage 2 Tested maturity
 - The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
-- The Stage 3 workflow is intentionally in memory and does not yet survive process or conversation boundaries
+- The SQLite prototype is a local durable store, not a multi-device cloud synchronization strategy
+- The runtime deployment location, durable-volume policy, and backup/restore procedure are not yet established
 - No full briefing runtime or user-facing approval interface exists yet
 
 ## NEXT
 
-1. Publish the Stage 3 Tested-maturity evidence, complete PR #5, and close Issue #4 after explicit GitHub authorization.
-2. Establish a Stage 4 milestone for the smallest persistent proposal, approval, and audit-state boundary.
-3. Resolve the storage choice and recovery semantics in Mission Control Development if they require a constitutional architecture decision; do not invent them during implementation.
-4. Implement persistence and restart/recovery acceptance tests without expanding into Gmail, the full briefing engine, or live EIS retrieval.
-5. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
+1. Review the Stage 4 decision, implementation, and five-process acceptance evidence against GitHub Issue #7.
+2. Stage and commit the confirmed Stage 4 files only after explicit authorization.
+3. Push the Stage 4 feature branch and open one draft pull request only after separate explicit authorization.
+4. Require canonical CI before merging or promoting Briefing Calendar Persistent State from Prototype to Tested.
+5. Establish the pilot runtime's durable-volume and backup/restore policy before relying on SQLite operationally.
+6. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
 

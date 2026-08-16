@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-08-16 — Persistent briefing-calendar state prototype
+
+Added the Stage 4 `CalendarProposalStore` boundary and a thin SQLite implementation using Python's maintained standard library. The storage decision compares structured files, SQLite, and hosted relational storage; SQLite is selected only for the local single-operator prototype and remains replaceable behind the Mission Control-owned protocol.
+
+Proposal state, source context, rationale, event data, IANA timezone names, version, decision status, audit records, verified execution receipts, and ICS artifact references now survive workflow restarts. Schema-version, corruption, incomplete-state, and foreign-database checks fail loudly rather than silently returning an empty queue. OAuth credentials and provider tokens are not stored.
+
+Approval is now durably transitioned to `execution_pending` before any external write. That state is excluded from the active approval queue and cannot be approved twice. If execution is interrupted or final receipt persistence fails, restart exposes the operation for explicit recovery. Recovery is attempted only through an executor that advertises duplicate-safe reconciliation; otherwise no retry occurs. Optimistic version/status checks prevent stale workflow instances from overriding a later decision or initiating an external write.
+
+Added **15 focused persistence tests** covering restart, deferred carry-forward, edited-version restoration, terminal decisions, approval-before-execution ordering, interrupted execution, duplicate-safe recovery, stale-state conflicts, persistence failures before and after external execution, receipt restoration, and corrupt/incompatible/incomplete state. The full suite passes **41 tests**.
+
+Added a reproducible five-process runtime harness. It prepared and deferred a proposal, restored and edited it, persisted approval before a synthetic external side effect, simulated process interruption, restored the quarantined operation, reconciled it through the recovery contract, and verified the final receipt in another process. The assertion gate reported `STAGE4_SEPARATE_PROCESS_ACCEPTANCE=PASS` and `LIVE_CALENDAR_MUTATIONS=0`.
+
+Briefing Calendar Persistent State remains **Prototype**, not Tested, until the feature branch receives canonical review and CI. Pilot durable-volume and backup/restore policy also remain operational prerequisites before relying on the local SQLite file.
+
 ## 2026-08-16 — Governed briefing-to-calendar workflow promoted to Tested
 
 Added the narrow Stage 3 briefing-to-calendar vertical slice using synthetic source material and in-memory state. A versioned calendar proposal preserves its source reference, source context, value rationale, destination, assumptions, conflicts, canonical event, and duplicate-safe operation ID.

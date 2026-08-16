@@ -23,4 +23,6 @@ This repository is the canonical implementation workspace for the Mission Contro
 
 ## Current milestone
 
-Stage 1 Calendar Service, ICS Export, Direct Google Calendar Write, and the Stage 3 governed briefing-calendar proposal workflow are Tested. Stage 3 includes inline context, a reinforced approval queue, Approve/Edit/Reject/Defer, verified execution/fallback outcomes, and audit records. The full suite passes 26 tests, synthetic lifecycle acceptance passed, and a live Google event was independently read back and confirmed visible by the user. Persistent proposal, approval, and audit state is NEXT.
+Stage 1 Calendar Service, ICS Export, Direct Google Calendar Write, and the Stage 3 governed briefing-calendar proposal workflow are Tested. Stage 4 now contains a Prototype SQLite-backed, replaceable persistence boundary for proposals, decisions, audit records, receipts, restart restoration, and duplicate-safe recovery. The full suite passes 41 tests, and a five-process synthetic runtime acceptance passed with zero live calendar mutations. Canonical review and CI are NEXT.
+
+The Stage 4 storage tradeoffs, safety rules, and replacement boundary are documented in [Stage 4 Persistence Decision](docs/STAGE4_PERSISTENCE_DECISION.md).
