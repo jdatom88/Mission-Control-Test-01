@@ -88,13 +88,14 @@ The binding service boundaries, approval semantics, briefing placement rules, ex
 
 Build vertical slices that prove value end to end before broadening the system.
 
-Current Stage 1 order:
+Vertical-slice sequence:
 
-1. Calendar Service vertical slice
-2. Connector state/health orchestration
-3. Direct Google Calendar path
-4. One briefing path that consumes shared capabilities
-5. Additional connectors and domain packets only after the first slice is reliable
+1. Calendar Service vertical slice — Tested
+2. Connector state/health orchestration — Prototype
+3. Direct Google Calendar path — Tested
+4. One briefing path that consumes shared capabilities — Stage 3 Tested
+5. Persistent proposal, approval, and audit state — current Stage 4 milestone
+6. Additional connectors and domain packets only after the governed path is durable
 
 ## Architecture conflict rule
 

@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 2 — direct Google Calendar connector validation complete.
+Stage 3 — governed briefing-to-calendar vertical slice, acceptance complete.
 
 ## Current milestone
 
-Review and merge draft PR #3, then begin the first governed briefing vertical slice using the Tested Calendar Service.
+Design the smallest persistent proposal, approval, and audit-state boundary for Stage 4 before expanding into the full briefing engine or live retrieval connectors.
 
 ## Implemented
 
@@ -35,6 +35,19 @@ Review and merge draft PR #3, then begin the first governed briefing vertical sl
 - User confirmed all five persistent events were visible in the calendar; the events remain active until separately deleted
 - Direct Google Calendar Write promoted from Prototype to Tested
 - Stage 1 GitHub Issue #1 and Stage 2 GitHub Issue #2 closed with acceptance evidence
+- Stage 2 PR #3 merged into canonical `main`; lightweight Python CI added and passed
+- Versioned Calendar Proposal model preserving source context, rationale, destination, assumptions, conflicts, and canonical event data
+- Separate inline proposal and reinforced approval-queue rendering
+- Governed Approve, Edit, Reject, and Defer lifecycle with renewed approval after edits
+- Deferred-proposal carry-forward into the final queue
+- Direct execution adapter using the Tested Calendar Service read-back path
+- Truthful verified-ICS fallback that never claims calendar import
+- Explicit audit records for decision, proposal version, execution outcome, and verification state
+- Ten focused Stage 3 workflow tests; full regression suite passes 26 tests
+- Synthetic Stage 3 runtime acceptance passed for Approve, Edit with renewed approval, Reject, Defer carry-forward, fail-loud verification failure, and verified ICS fallback
+- Authorized Stage 3 live acceptance event created on the primary Google Calendar for August 27, 2026, from 2:00–3:00 PM `America/Los_Angeles`, independently read back by provider ID, and found active in a bounded search
+- User confirmed the Stage 3 acceptance event was visible; it remains active until the user deletes it
+- Briefing Calendar Proposal Workflow promoted from Prototype to Tested on combined regression, synthetic lifecycle, provider read-back, active-search, and user-visible evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -42,6 +55,7 @@ Review and merge draft PR #3, then begin the first governed briefing vertical sl
 - Calendar Service and ICS Export are Tested but not yet Stable
 - Connector state model
 - Direct Google Calendar Write is Tested but not yet Stable
+- Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 
 ## Blockers
 
@@ -49,13 +63,16 @@ Review and merge draft PR #3, then begin the first governed briefing vertical sl
 - No remaining blocker for Stage 2 Tested maturity
 - The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
+- The Stage 3 workflow is intentionally in memory and does not yet survive process or conversation boundaries
+- No full briefing runtime or user-facing approval interface exists yet
 
 ## NEXT
 
-1. Review and merge draft PR #3 from `stage2-google-calendar` into the canonical branch.
-2. Begin one briefing vertical slice that consumes the Tested Calendar Service and preserves the ratified inline-proposal and reinforced approval-queue loop.
-3. Preserve Approve, Edit, Reject, and Defer; renewed approval after material edits; provider read-back; and verified ICS email fallback.
-4. Retain raw Google IANA-timezone field retrieval as a hardening task before promoting Direct Google Calendar Write to Stable.
+1. Publish the Stage 3 Tested-maturity evidence, complete PR #5, and close Issue #4 after explicit GitHub authorization.
+2. Establish a Stage 4 milestone for the smallest persistent proposal, approval, and audit-state boundary.
+3. Resolve the storage choice and recovery semantics in Mission Control Development if they require a constitutional architecture decision; do not invent them during implementation.
+4. Implement persistence and restart/recovery acceptance tests without expanding into Gmail, the full briefing engine, or live EIS retrieval.
+5. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
 
