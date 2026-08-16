@@ -64,15 +64,25 @@ All Mission Control calendar-producing subsystems must route through the central
 
 The briefing/reasoning layer must not construct raw ICS text.
 
+Calendar recommendations must first appear inline with the correspondence or intelligence that gives them meaning, then reappear in an approval queue with their source context and value rationale intact. The user may Approve, Edit, Reject, or Defer. An edited proposal requires renewed approval before execution.
+
+For the three-part Expanded Intelligence Brief, each part ends with a queue for proposals introduced in that part. Unresolved proposals carry forward into the final Part Three queue. This reinforcement loop must preserve the value of the recommendation without interrupting canonical reading or audio narration.
+
 Preferred execution path:
 
 Mission Control event → validate → authorized calendar connector → verify creation.
+
+For Google Calendar, verification requires a separate provider read after creation. The create response alone is not sufficient. Mission Control must preserve an operation identifier and the connector must derive a valid deterministic Google event ID so an uncertain retry can read the known event rather than create a duplicate.
 
 Fallback path:
 
 Mission Control event → validate → ICS adapter → `icalendar` → parse-back validation → semantic/artifact checks → verified `.ics` file.
 
 The phrase “Download ICS” must never be displayed unless a real verified artifact exists.
+
+Emailing a verified ICS artifact is an authorized fallback delivery path, not proof of calendar creation. Delivery, client import, and direct provider creation are separate outcomes and must be reported separately.
+
+The binding service boundaries, approval semantics, briefing placement rules, execution paths, and progressive-automation constraints are specified in [Calendar Service Architecture](CALENDAR_SERVICE_ARCHITECTURE.md).
 
 ## Implementation sequencing
 

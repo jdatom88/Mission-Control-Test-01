@@ -8,41 +8,54 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 1 — first working vertical slice.
+Stage 2 — direct Google Calendar connector validation complete.
 
 ## Current milestone
 
-Validate the centralized Calendar Service end to end before expanding into broader briefing or connector implementation.
+Review and merge draft PR #3, then begin the first governed briefing vertical slice using the Tested Calendar Service.
 
 ## Implemented
 
-- Calendar Service prototype using the maintained `icalendar` library
+- Calendar Service implementation using the maintained `icalendar` library
 - Parse-back and artifact existence validation for ICS generation
 - Canonical connector state enum and user-facing state messages
 - Initial calendar regression tests
+- Calendar regression suite executed successfully: 3 tests passed
+- Stage 1 acceptance ICS generated with `America/Los_Angeles`, validated, delivered by email, and successfully imported into Apple Calendar
+- Calendar Event Schema / Service and ICS Export promoted from Prototype to Tested
+- Provider-neutral direct-calendar orchestration behind the Calendar Service boundary
+- Thin Google Calendar API v3 adapter using write-access preflight, `events.insert`, and independent `events.get` verification
+- Duplicate-safe Google event IDs derived from caller-preserved Mission Control operation IDs
+- Fail-loud direct connector outcomes for wrong account, insufficient scope, expired authorization, provider unavailability, execution failure, and verification failure
+- Direct-connector and Google-adapter regression coverage; full suite passes 16 tests
+- Live owner-access preflight against the connected primary Google Calendar
+- Authorized live event creation followed by independent ID-based read-back; all observable semantics and equivalent start/end instants matched
+- Authorized deletion followed by a bounded active-calendar search confirming the test event was absent
+- Five persistent `America/Los_Angeles` work events created for August 17–21, 2026, independently read back, and found active at the requested 7:00 AM–5:30 PM local times
+- User confirmed all five persistent events were visible in the calendar; the events remain active until separately deleted
+- Direct Google Calendar Write promoted from Prototype to Tested
+- Stage 1 GitHub Issue #1 and Stage 2 GitHub Issue #2 closed with acceptance evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
 
-- Calendar Service
+- Calendar Service and ICS Export are Tested but not yet Stable
 - Connector state model
+- Direct Google Calendar Write is Tested but not yet Stable
 
 ## Blockers
 
-- Regression suite has not yet been executed in a Python runtime
-- No real `.ics` artifact has yet been generated and imported into a real calendar client as an acceptance test
-- Direct Google Calendar write path has not yet been wired into the Mission Control Calendar Service
+- No remaining blocker for Stage 1 Calendar Service acceptance
+- No remaining blocker for Stage 2 Tested maturity
+- The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
+- OAuth credentials remain externally managed; no credential or token file belongs in the repository
 
 ## NEXT
 
-1. Create a local Python environment.
-2. Install `requirements-dev.txt`.
-3. Run `pytest`.
-4. Fix only defects required to make the existing Calendar Service regression tests pass.
-5. Generate one real `.ics` artifact using `America/Los_Angeles`.
-6. Validate the artifact by importing it into a real calendar client and confirming title, start, end, timezone, and description.
-7. Record results in `CHANGELOG.md` and `CAPABILITY_REGISTRY.md`.
-8. Only after the calendar vertical slice passes, begin direct Google Calendar integration and shared connector health orchestration.
+1. Review and merge draft PR #3 from `stage2-google-calendar` into the canonical branch.
+2. Begin one briefing vertical slice that consumes the Tested Calendar Service and preserves the ratified inline-proposal and reinforced approval-queue loop.
+3. Preserve Approve, Edit, Reject, and Defer; renewed approval after material edits; provider read-back; and verified ICS email fallback.
+4. Retain raw Google IANA-timezone field retrieval as a hardening task before promoting Direct Google Calendar Write to Stable.
 
 ## Do not start yet
 
