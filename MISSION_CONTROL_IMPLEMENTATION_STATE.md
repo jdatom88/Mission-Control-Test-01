@@ -12,7 +12,7 @@ Stage 2 — direct Google Calendar connector validation complete.
 
 ## Current milestone
 
-Publish the completed Stage 2 acceptance record, close GitHub Issue #2, and merge the draft connector pull request after review.
+Review and merge draft PR #3, then begin the first governed briefing vertical slice using the Tested Calendar Service.
 
 ## Implemented
 
@@ -34,7 +34,7 @@ Publish the completed Stage 2 acceptance record, close GitHub Issue #2, and merg
 - Five persistent `America/Los_Angeles` work events created for August 17–21, 2026, independently read back, and found active at the requested 7:00 AM–5:30 PM local times
 - User confirmed all five persistent events were visible in the calendar; the events remain active until separately deleted
 - Direct Google Calendar Write promoted from Prototype to Tested
-- Stage 1 GitHub Issue #1 closed with acceptance evidence; Stage 2 Issue #2 is ready to close with the completed evidence
+- Stage 1 GitHub Issue #1 and Stage 2 GitHub Issue #2 closed with acceptance evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -52,7 +52,7 @@ Publish the completed Stage 2 acceptance record, close GitHub Issue #2, and merg
 
 ## NEXT
 
-1. Publish this acceptance update on `stage2-google-calendar`, close GitHub Issue #2 with the evidence, and review/merge the draft pull request.
+1. Review and merge draft PR #3 from `stage2-google-calendar` into the canonical branch.
 2. Begin one briefing vertical slice that consumes the Tested Calendar Service and preserves the ratified inline-proposal and reinforced approval-queue loop.
 3. Preserve Approve, Edit, Reject, and Defer; renewed approval after material edits; provider read-back; and verified ICS email fallback.
 4. Retain raw Google IANA-timezone field retrieval as a hardening task before promoting Direct Google Calendar Write to Stable.
