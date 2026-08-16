@@ -23,4 +23,4 @@ This repository is the canonical implementation workspace for the Mission Contro
 
 ## Current milestone
 
-Stage 1 scaffold and calendar capability prototype.
+Stage 1 Calendar Service and ICS Export are Tested. The direct Google Calendar path is a Prototype with 16 passing regression tests and partial live acceptance: creation, observable-semantic read-back, and authorized deletion passed, while exact stored IANA timezone read-back remains open in GitHub Issue #2.

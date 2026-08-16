@@ -11,6 +11,7 @@ class ConnectorState(str, Enum):
     AUTH_EXPIRED = "authentication_expired"
     CONNECTOR_UNAVAILABLE = "connector_unavailable"
     EXECUTION_FAILURE = "execution_failure"
+    VERIFICATION_FAILURE = "verification_failure"
     UNKNOWN = "unknown"
 
 
@@ -23,6 +24,7 @@ def user_message(state: ConnectorState) -> str:
         ConnectorState.AUTH_EXPIRED: "Authentication has expired and must be renewed.",
         ConnectorState.CONNECTOR_UNAVAILABLE: "The connector is currently unavailable.",
         ConnectorState.EXECUTION_FAILURE: "The connector was reached, but the requested operation failed.",
+        ConnectorState.VERIFICATION_FAILURE: "The operation ran, but its result could not be verified.",
         ConnectorState.UNKNOWN: "Connector state could not be determined.",
     }
     return messages[state]

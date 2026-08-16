@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local Google OAuth material must never enter source control.
+credentials.json
+token.json
+
+# Runtime acceptance artifacts are generated, not source files.
+*.ics

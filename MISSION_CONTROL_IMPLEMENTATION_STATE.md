@@ -8,41 +8,52 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 1 — first working vertical slice.
+Stage 2 — direct Google Calendar connector validation.
 
 ## Current milestone
 
-Validate the centralized Calendar Service end to end before expanding into broader briefing or connector implementation.
+Close the remaining stored-IANA-timezone read-back gap for the direct Google Calendar connector, tracked in GitHub Issue #2.
 
 ## Implemented
 
-- Calendar Service prototype using the maintained `icalendar` library
+- Calendar Service implementation using the maintained `icalendar` library
 - Parse-back and artifact existence validation for ICS generation
 - Canonical connector state enum and user-facing state messages
 - Initial calendar regression tests
+- Calendar regression suite executed successfully: 3 tests passed
+- Stage 1 acceptance ICS generated with `America/Los_Angeles`, validated, delivered by email, and successfully imported into Apple Calendar
+- Calendar Event Schema / Service and ICS Export promoted from Prototype to Tested
+- Provider-neutral direct-calendar orchestration behind the Calendar Service boundary
+- Thin Google Calendar API v3 adapter using write-access preflight, `events.insert`, and independent `events.get` verification
+- Duplicate-safe Google event IDs derived from caller-preserved Mission Control operation IDs
+- Fail-loud direct connector outcomes for wrong account, insufficient scope, expired authorization, provider unavailability, execution failure, and verification failure
+- Direct-connector and Google-adapter regression coverage; full suite passes 16 tests
+- Live owner-access preflight against the connected primary Google Calendar
+- Authorized live event creation followed by independent ID-based read-back; all observable semantics and equivalent start/end instants matched
+- Authorized deletion followed by a bounded active-calendar search confirming the test event was absent
+- Stage 1 GitHub Issue #1 closed with acceptance evidence; Stage 2 validation continues in Issue #2
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
 
-- Calendar Service
+- Calendar Service and ICS Export are Tested but not yet Stable
 - Connector state model
+- Direct Google Calendar Write prototype; automated coverage and partial live provider acceptance pass, but stored IANA timezone read-back remains unverified
 
 ## Blockers
 
-- Regression suite has not yet been executed in a Python runtime
-- No real `.ics` artifact has yet been generated and imported into a real calendar client as an acceptance test
-- Direct Google Calendar write path has not yet been wired into the Mission Control Calendar Service
+- No remaining blocker for Stage 1 Calendar Service acceptance
+- The available live connector read-back normalizes timestamps to an equivalent numeric offset and does not expose the provider's stored `start.timeZone` and `end.timeZone` values
+- OAuth credentials remain externally managed; no credential or token file belongs in the repository
 
 ## NEXT
 
-1. Create a local Python environment.
-2. Install `requirements-dev.txt`.
-3. Run `pytest`.
-4. Fix only defects required to make the existing Calendar Service regression tests pass.
-5. Generate one real `.ics` artifact using `America/Los_Angeles`.
-6. Validate the artifact by importing it into a real calendar client and confirming title, start, end, timezone, and description.
-7. Record results in `CHANGELOG.md` and `CAPABILITY_REGISTRY.md`.
-8. Only after the calendar vertical slice passes, begin direct Google Calendar integration and shared connector health orchestration.
+1. Review and merge the draft `stage2-google-calendar` pull request after its checks and evidence are accepted.
+2. Extend or replace the thin read-back surface so verification receives Google's stored `start.timeZone` and `end.timeZone` fields, not only equivalent normalized instants.
+3. Run one explicitly authorized acceptance event if another live mutation is required, verify exact IANA timezone persistence, and remove it only with deletion authorization.
+4. Promote Direct Google Calendar Write from Prototype to Tested only after every registry acceptance condition passes.
+5. Preserve the verified ICS email path as the universal fallback.
+6. After the direct connector vertical slice is reliable, integrate one briefing path with the ratified inline-proposal and reinforced approval-queue loop.
 
 ## Do not start yet
 
