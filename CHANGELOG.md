@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-08-16 — Governed briefing-to-calendar prototype
+## 2026-08-16 — Governed briefing-to-calendar workflow promoted to Tested
 
 Added the narrow Stage 3 briefing-to-calendar vertical slice using synthetic source material and in-memory state. A versioned calendar proposal preserves its source reference, source context, value rationale, destination, assumptions, conflicts, canonical event, and duplicate-safe operation ID.
 
@@ -8,7 +8,11 @@ Added separate inline and reinforced approval-queue renderings. The workflow sup
 
 Approved proposals execute only through a Calendar Service executor. Direct execution uses the existing provider read-back path. When direct creation is not verified, the fallback may generate and validate an ICS artifact while reporting that manual import is still required. It never reports an ICS file as a calendar import or direct provider creation.
 
-Added explicit audit records for proposal version, decision, status, execution outcome, verification flag, detail, and timestamp. The full regression suite now passes **26 tests**. The Briefing Calendar Proposal Workflow is **Prototype**, not Tested: automated synthetic validation passes, but runtime acceptance and persistent operational state remain future work.
+Added explicit audit records for proposal version, decision, status, execution outcome, verification flag, detail, and timestamp. The full regression suite passes **26 tests**. Synthetic runtime acceptance exercised Approve, Edit with renewed approval, Reject, Defer carry-forward, fail-loud verification failure, and verified ICS fallback without a live mutation.
+
+The authorized live acceptance then created `Mission Control Stage 3 Acceptance Test — Client Launch Readiness Review` on the primary Google Calendar for August 27, 2026, from 2:00–3:00 PM in `America/Los_Angeles`. The provider event ID was independently read back and found active in a bounded search, and the user confirmed that the event was visible in their calendar. The event remains active until the user deletes it.
+
+The Briefing Calendar Proposal Workflow is promoted from **Prototype** to **Tested** on the combined repository regression, synthetic lifecycle, provider read-back, active-search, and real-client evidence. This does not claim that the in-memory repository workflow itself owns durable operational state: persistent proposal, approval, and audit storage is the next milestone before live briefing retrieval expands.
 
 ## 2026-08-16 — Direct Google Calendar connector promoted to Tested
 

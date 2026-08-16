@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 3 — governed briefing-to-calendar vertical slice.
+Stage 3 — governed briefing-to-calendar vertical slice, acceptance complete.
 
 ## Current milestone
 
-Validate the synthetic briefing-calendar proposal workflow defined in GitHub Issue #4 without expanding into the full briefing engine or live retrieval connectors.
+Design the smallest persistent proposal, approval, and audit-state boundary for Stage 4 before expanding into the full briefing engine or live retrieval connectors.
 
 ## Implemented
 
@@ -44,6 +44,10 @@ Validate the synthetic briefing-calendar proposal workflow defined in GitHub Iss
 - Truthful verified-ICS fallback that never claims calendar import
 - Explicit audit records for decision, proposal version, execution outcome, and verification state
 - Ten focused Stage 3 workflow tests; full regression suite passes 26 tests
+- Synthetic Stage 3 runtime acceptance passed for Approve, Edit with renewed approval, Reject, Defer carry-forward, fail-loud verification failure, and verified ICS fallback
+- Authorized Stage 3 live acceptance event created on the primary Google Calendar for August 27, 2026, from 2:00–3:00 PM `America/Los_Angeles`, independently read back by provider ID, and found active in a bounded search
+- User confirmed the Stage 3 acceptance event was visible; it remains active until the user deletes it
+- Briefing Calendar Proposal Workflow promoted from Prototype to Tested on combined regression, synthetic lifecycle, provider read-back, active-search, and user-visible evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -51,7 +55,7 @@ Validate the synthetic briefing-calendar proposal workflow defined in GitHub Iss
 - Calendar Service and ICS Export are Tested but not yet Stable
 - Connector state model
 - Direct Google Calendar Write is Tested but not yet Stable
-- Briefing Calendar Proposal Workflow prototype; automated synthetic validation passes, runtime acceptance and persistent state are pending
+- Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 
 ## Blockers
 
@@ -64,11 +68,11 @@ Validate the synthetic briefing-calendar proposal workflow defined in GitHub Iss
 
 ## NEXT
 
-1. Review the Stage 3 synthetic inline and approval-queue outputs against Issue #4 acceptance criteria.
-2. Exercise Approve, Edit, Reject, and Defer without a live calendar mutation; confirm audit records and carry-forward behavior.
-3. Publish the prototype on a Stage 3 feature branch and open one draft pull request after explicit authorization.
-4. Promote the workflow from Prototype to Tested only after runtime acceptance passes.
-5. After Stage 3 is reliable, design the smallest persistent proposal/audit store before adding live EIS retrieval.
+1. Publish the Stage 3 Tested-maturity evidence, complete PR #5, and close Issue #4 after explicit GitHub authorization.
+2. Establish a Stage 4 milestone for the smallest persistent proposal, approval, and audit-state boundary.
+3. Resolve the storage choice and recovery semantics in Mission Control Development if they require a constitutional architecture decision; do not invent them during implementation.
+4. Implement persistence and restart/recovery acceptance tests without expanding into Gmail, the full briefing engine, or live EIS retrieval.
+5. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
 
