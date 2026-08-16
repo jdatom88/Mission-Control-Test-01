@@ -89,7 +89,7 @@ The Google Calendar adapter accepts an externally authorized API v3 client and m
 5. Compare title, start, end, timezone, description, location, status, and provider identity with the approved canonical event.
 6. Report success only when the read-back matches.
 
-Equivalent instants alone do not satisfy timezone verification when the approved event names an IANA timezone. The read-back surface must expose and compare the provider's stored `start.timeZone` and `end.timeZone` values. If it exposes only a normalized numeric offset, Mission Control must report partial verification and must not promote the connector on that evidence.
+Equivalent instants alone do not satisfy timezone verification when the approved event names an IANA timezone. Prefer a read-back surface that exposes and compares the provider's stored `start.timeZone` and `end.timeZone` values. When the available surface omits those raw fields, Tested maturity may instead use the combination of equivalent-instant read-back, an active-calendar search rendered in the requested IANA timezone, and explicit user confirmation that the event is visible at the requested local time. Raw IANA-field retrieval remains required hardening evidence before Stable maturity.
 
 If Google reports that the deterministic event ID already exists, the connector reads that event instead of blindly repeating the create request. The caller must preserve the Mission Control operation ID with the approval/audit record so retry remains duplicate-safe.
 

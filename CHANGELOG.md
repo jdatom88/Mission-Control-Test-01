@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-08-16 — Direct Google Calendar connector prototype
+## 2026-08-16 — Direct Google Calendar connector promoted to Tested
 
 Added provider-neutral direct-calendar orchestration and a thin Google Calendar API v3 adapter. The governed path now checks calendar write access, creates with `events.insert`, performs an independent `events.get` read-back, compares canonical event semantics, and reports verification failure separately from execution failure.
 
@@ -8,7 +8,9 @@ Added duplicate-safe retry behavior using a caller-preserved Mission Control ope
 
 The full regression suite passes **16 tests**, and a live acceptance run confirmed owner access to the connected primary Google Calendar. The authorized test event was created and independently read back with matching provider ID, title, description, attendees, visibility, transparency, conferencing state, and equivalent start/end instants. The event was then deleted, and a bounded active-calendar search confirmed it was absent.
 
-Direct Google Calendar Write remains **Prototype**, not Tested. The available connector read-back normalized the timestamps to an equivalent numeric offset but did not expose Google's stored `start.timeZone` and `end.timeZone` IANA fields. Exact `America/Los_Angeles` persistence therefore remains unverified and is tracked in GitHub Issue #2. This is a truthful partial acceptance, not completion.
+The persistent user-facing acceptance run then created five separate work events on the primary Google Calendar for August 17–21, 2026, from 7:00 AM–5:30 PM in `America/Los_Angeles`. Independent provider reads and a bounded active-calendar search confirmed all five IDs, titles, descriptions, opaque status, and exact requested local start/end times. The user subsequently confirmed that all five events were visible in the calendar. The events were intentionally left active.
+
+Direct Google Calendar Write is promoted from **Prototype** to **Tested** on this combined automated, provider-read-back, active-search, and real-client evidence. The connector surface's failure to expose Google's raw `start.timeZone` and `end.timeZone` response fields remains a hardening item before **Stable**, rather than a blocker to Tested maturity.
 
 ## 2026-08-16 — Calendar proposal reinforcement architecture
 

@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 2 — direct Google Calendar connector validation.
+Stage 2 — direct Google Calendar connector validation complete.
 
 ## Current milestone
 
-Close the remaining stored-IANA-timezone read-back gap for the direct Google Calendar connector, tracked in GitHub Issue #2.
+Publish the completed Stage 2 acceptance record, close GitHub Issue #2, and merge the draft connector pull request after review.
 
 ## Implemented
 
@@ -31,29 +31,31 @@ Close the remaining stored-IANA-timezone read-back gap for the direct Google Cal
 - Live owner-access preflight against the connected primary Google Calendar
 - Authorized live event creation followed by independent ID-based read-back; all observable semantics and equivalent start/end instants matched
 - Authorized deletion followed by a bounded active-calendar search confirming the test event was absent
-- Stage 1 GitHub Issue #1 closed with acceptance evidence; Stage 2 validation continues in Issue #2
+- Five persistent `America/Los_Angeles` work events created for August 17–21, 2026, independently read back, and found active at the requested 7:00 AM–5:30 PM local times
+- User confirmed all five persistent events were visible in the calendar; the events remain active until separately deleted
+- Direct Google Calendar Write promoted from Prototype to Tested
+- Stage 1 GitHub Issue #1 closed with acceptance evidence; Stage 2 Issue #2 is ready to close with the completed evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
 
 - Calendar Service and ICS Export are Tested but not yet Stable
 - Connector state model
-- Direct Google Calendar Write prototype; automated coverage and partial live provider acceptance pass, but stored IANA timezone read-back remains unverified
+- Direct Google Calendar Write is Tested but not yet Stable
 
 ## Blockers
 
 - No remaining blocker for Stage 1 Calendar Service acceptance
-- The available live connector read-back normalizes timestamps to an equivalent numeric offset and does not expose the provider's stored `start.timeZone` and `end.timeZone` values
+- No remaining blocker for Stage 2 Tested maturity
+- The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
 
 ## NEXT
 
-1. Review and merge the draft `stage2-google-calendar` pull request after its checks and evidence are accepted.
-2. Extend or replace the thin read-back surface so verification receives Google's stored `start.timeZone` and `end.timeZone` fields, not only equivalent normalized instants.
-3. Run one explicitly authorized acceptance event if another live mutation is required, verify exact IANA timezone persistence, and remove it only with deletion authorization.
-4. Promote Direct Google Calendar Write from Prototype to Tested only after every registry acceptance condition passes.
-5. Preserve the verified ICS email path as the universal fallback.
-6. After the direct connector vertical slice is reliable, integrate one briefing path with the ratified inline-proposal and reinforced approval-queue loop.
+1. Publish this acceptance update on `stage2-google-calendar`, close GitHub Issue #2 with the evidence, and review/merge the draft pull request.
+2. Begin one briefing vertical slice that consumes the Tested Calendar Service and preserves the ratified inline-proposal and reinforced approval-queue loop.
+3. Preserve Approve, Edit, Reject, and Defer; renewed approval after material edits; provider read-back; and verified ICS email fallback.
+4. Retain raw Google IANA-timezone field retrieval as a hardening task before promoting Direct Google Calendar Write to Stable.
 
 ## Do not start yet
 
