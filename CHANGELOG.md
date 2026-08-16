@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-16 — Governed briefing-to-calendar prototype
+
+Added the narrow Stage 3 briefing-to-calendar vertical slice using synthetic source material and in-memory state. A versioned calendar proposal preserves its source reference, source context, value rationale, destination, assumptions, conflicts, canonical event, and duplicate-safe operation ID.
+
+Added separate inline and reinforced approval-queue renderings. The workflow supports Approve, Edit, Reject, and Defer; a revised proposal becomes a new pending version and cannot execute without renewed approval. Rejected proposals leave the queue, while deferred proposals carry forward into the final queue.
+
+Approved proposals execute only through a Calendar Service executor. Direct execution uses the existing provider read-back path. When direct creation is not verified, the fallback may generate and validate an ICS artifact while reporting that manual import is still required. It never reports an ICS file as a calendar import or direct provider creation.
+
+Added explicit audit records for proposal version, decision, status, execution outcome, verification flag, detail, and timestamp. The full regression suite now passes **26 tests**. The Briefing Calendar Proposal Workflow is **Prototype**, not Tested: automated synthetic validation passes, but runtime acceptance and persistent operational state remain future work.
+
 ## 2026-08-16 — Direct Google Calendar connector promoted to Tested
 
 Added provider-neutral direct-calendar orchestration and a thin Google Calendar API v3 adapter. The governed path now checks calendar write access, creates with `events.insert`, performs an independent `events.get` read-back, compares canonical event semantics, and reports verification failure separately from execution failure.

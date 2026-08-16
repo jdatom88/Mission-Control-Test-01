@@ -23,4 +23,4 @@ This repository is the canonical implementation workspace for the Mission Contro
 
 ## Current milestone
 
-Stage 1 Calendar Service and ICS Export are Tested. Direct Google Calendar Write is also Tested after 16 passing regression tests, verified live creation/read-back, and user confirmation that five persistent work events appeared at the requested Pacific times. The next implementation slice is one governed briefing path.
+Stage 1 Calendar Service, ICS Export, and Direct Google Calendar Write are Tested. Stage 3 now contains a Prototype governed briefing-calendar proposal workflow with inline context, a reinforced approval queue, Approve/Edit/Reject/Defer, verified execution/fallback outcomes, and audit records. The full suite passes 26 tests; runtime acceptance is NEXT.
