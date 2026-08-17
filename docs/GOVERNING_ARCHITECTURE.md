@@ -102,8 +102,9 @@ Vertical-slice sequence:
 2. Connector state/health orchestration — Prototype
 3. Direct Google Calendar path — Tested
 4. One briefing path that consumes shared capabilities — Stage 3 Tested
-5. Persistent proposal, approval, and audit state — current Stage 4 Prototype
-6. Additional connectors and domain packets only after the governed path is durable
+5. Persistent proposal, approval, and audit state — Stage 4 Tested
+6. Pilot runtime durable-volume and backup/restore validation — NEXT
+7. Additional connectors and domain packets only after the governed path is operationally durable
 
 ## Architecture conflict rule
 

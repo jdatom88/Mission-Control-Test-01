@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-17 — Persistent briefing-calendar state promoted to Tested
+
+Reran the complete Stage 4 acceptance after publication. All **15 focused persistence tests** and all **41 repository tests** passed. The five-process harness again completed prepare/defer, restore/edit, approval-before-execution, synthetic interruption, restart, duplicate-safe recovery, and final receipt verification. Its assertion gate again reported `STAGE4_SEPARATE_PROCESS_ACCEPTANCE=PASS` and `LIVE_CALENDAR_MUTATIONS=0`.
+
+Canonical GitHub CI passed for both the implementation and maturity-update heads. Briefing Calendar Persistent State is promoted from **Prototype** to **Tested** on the combined regression, separate-process runtime, interruption/recovery, rerun, and canonical CI evidence.
+
+This promotion does not make the capability **Stable** and does not claim multi-device cloud synchronization. The pilot runtime still needs an explicit durable-volume location plus backup/restore policy and validation before operational reliance on the SQLite file.
+
 ## 2026-08-16 — Persistent briefing-calendar state prototype
 
 Added the Stage 4 `CalendarProposalStore` boundary and a thin SQLite implementation using Python's maintained standard library. The storage decision compares structured files, SQLite, and hosted relational storage; SQLite is selected only for the local single-operator prototype and remains replaceable behind the Mission Control-owned protocol.

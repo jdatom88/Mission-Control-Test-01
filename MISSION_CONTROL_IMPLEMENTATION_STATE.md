@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 4 — persistent proposal, approval, and audit state prototype.
+Stage 4 — persistent proposal, approval, and audit state acceptance complete.
 
 ## Current milestone
 
-Validate the Stage 4 SQLite-backed persistence and restart/recovery boundary defined in GitHub Issue #7 before expanding into the full briefing engine or live retrieval connectors.
+Define and validate the pilot runtime's durable-volume and backup/restore boundary before relying operationally on the Tested SQLite store or expanding into live briefing retrieval.
 
 ## Implemented
 
@@ -59,6 +59,11 @@ Validate the Stage 4 SQLite-backed persistence and restart/recovery boundary def
 - Fifteen focused Stage 4 persistence tests; full regression suite passes 41 tests
 - Reproducible Stage 4 five-process runtime harness covering prepare/defer, restore/edit, approval-before-execution, interruption, restart, duplicate-safe recovery, and final receipt verification
 - Stage 4 separate-process assertion gate passed with zero live calendar mutations
+- Stage 4 acceptance rerun passed all 15 focused persistence tests and all 41 repository tests
+- Five-process assertion gate independently reconfirmed with zero live calendar mutations
+- Canonical GitHub CI passed for the implementation and maturity-update heads
+- Briefing Calendar Persistent State promoted from Prototype to Tested
+- Stage 4 PR #8 merged into canonical `main`; GitHub Issue #7 closed with acceptance evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -67,7 +72,7 @@ Validate the Stage 4 SQLite-backed persistence and restart/recovery boundary def
 - Connector state model
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
-- Briefing Calendar Persistent State is Prototype; automated and separate-process synthetic acceptance pass, while canonical review/CI and deployment durability are pending
+- Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
 
 ## Blockers
 
@@ -81,11 +86,11 @@ Validate the Stage 4 SQLite-backed persistence and restart/recovery boundary def
 
 ## NEXT
 
-1. Review the Stage 4 decision, implementation, and five-process acceptance evidence against GitHub Issue #7.
-2. Stage and commit the confirmed Stage 4 files only after explicit authorization.
-3. Push the Stage 4 feature branch and open one draft pull request only after separate explicit authorization.
-4. Require canonical CI before merging or promoting Briefing Calendar Persistent State from Prototype to Tested.
-5. Establish the pilot runtime's durable-volume and backup/restore policy before relying on SQLite operationally.
+1. Define the pilot runtime's durable-volume location, ownership, backup cadence, restore procedure, and fail-loud unavailable-volume behavior.
+2. Surface any choice between a local durable volume and a hosted shared store to Mission Control Development if it changes the intended cloud or multi-device operating model.
+3. Validate database integrity and backup/restore on the selected pilot runtime before operational reliance or Stable promotion.
+4. After the durability boundary is established, select the next governed vertical slice in Mission Control Development rather than assuming Gmail/EIS or full briefing expansion.
+5. Open the applicable GitHub issue only after the next milestone is approved.
 6. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
