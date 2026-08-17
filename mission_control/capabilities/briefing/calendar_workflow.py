@@ -32,6 +32,7 @@ class ProposalStatus(str, Enum):
     PENDING = "pending"
     DEFERRED = "deferred"
     REJECTED = "rejected"
+    EXECUTION_PENDING = "execution_pending"
     EXECUTED = "executed"
     FALLBACK_READY = "fallback_ready"
     EXECUTION_FAILED = "execution_failed"
@@ -118,8 +119,49 @@ class ExecutionReceipt:
     artifact_path: Path | None = None
 
 
+@dataclass(frozen=True)
+class ProposalCheckpoint:
+    """Optimistic concurrency checkpoint for one persisted proposal."""
+
+    version: int
+    status: ProposalStatus
+
+
+@dataclass(frozen=True)
+class StoredExecutionReceipt:
+    proposal_id: str
+    version: int
+    receipt: ExecutionReceipt
+
+
+@dataclass(frozen=True)
+class WorkflowSnapshot:
+    proposals: tuple[CalendarProposal, ...] = ()
+    audit_records: tuple[AuditRecord, ...] = ()
+    receipts: tuple[StoredExecutionReceipt, ...] = ()
+
+
+class CalendarProposalStore(Protocol):
+    """Replaceable durable state boundary owned by Mission Control."""
+
+    def load(self) -> WorkflowSnapshot: ...
+
+    def save_transition(
+        self,
+        proposal: CalendarProposal,
+        audit_record: AuditRecord,
+        *,
+        expected: ProposalCheckpoint | None,
+        receipt: ExecutionReceipt | None = None,
+    ) -> None: ...
+
+
 class CalendarProposalExecutor(Protocol):
     def execute(self, proposal: CalendarProposal) -> ExecutionReceipt: ...
+
+
+class RecoveryRequiredError(RuntimeError):
+    """An interrupted external write cannot be retried blindly."""
 
 
 class DirectProposalExecutor:
@@ -153,6 +195,10 @@ class DirectProposalExecutor:
             event_url=result.event_url,
         )
 
+    def recover(self, proposal: CalendarProposal) -> ExecutionReceipt:
+        """Reconcile by reusing the deterministic operation ID and read-back path."""
+        return self.execute(proposal)
+
 
 class IcsProposalExecutor:
     """Generate a verified artifact without claiming provider creation."""
@@ -176,6 +222,10 @@ class IcsProposalExecutor:
             provider="ics",
             artifact_path=artifact,
         )
+
+    def recover(self, proposal: CalendarProposal) -> ExecutionReceipt:
+        """Regenerate the same deterministic, parse-back-verified artifact."""
+        return self.execute(proposal)
 
 
 class DirectWithIcsFallbackExecutor:
@@ -212,6 +262,38 @@ class DirectWithIcsFallbackExecutor:
             ),
         )
 
+    def recover(self, proposal: CalendarProposal) -> ExecutionReceipt:
+        """Recover only when both component paths advertise safe reconciliation."""
+        direct_recover = getattr(self._direct_executor, "recover", None)
+        fallback_recover = getattr(self._fallback_executor, "recover", None)
+        if not callable(direct_recover) or not callable(fallback_recover):
+            raise RecoveryRequiredError(
+                "Calendar execution remains uncertain; the configured direct and "
+                "fallback paths do not both support duplicate-safe recovery."
+            )
+
+        direct = direct_recover(proposal)
+        if direct.verified:
+            return direct
+
+        fallback = fallback_recover(proposal)
+        if not fallback.verified:
+            return ExecutionReceipt(
+                outcome=ExecutionOutcome.FAILED,
+                verified=False,
+                message=(
+                    f"Direct calendar recovery was not verified: {direct.message} "
+                    f"Fallback recovery also failed: {fallback.message}"
+                ),
+            )
+        return replace(
+            fallback,
+            message=(
+                f"Direct calendar recovery was not verified: {direct.message} "
+                f"{fallback.message}"
+            ),
+        )
+
 
 @dataclass(frozen=True)
 class AuditRecord:
@@ -233,15 +315,40 @@ class DecisionResult:
 
 
 class CalendarProposalWorkflow:
-    """In-memory lifecycle for the single Stage 3 briefing vertical slice."""
+    """Governed lifecycle with an optional durable, replaceable state store."""
 
-    def __init__(self) -> None:
+    def __init__(self, store: CalendarProposalStore | None = None) -> None:
+        self._store = store
         self._proposals: dict[str, CalendarProposal] = {}
         self._audit: list[AuditRecord] = []
+        self._receipts: dict[tuple[str, int], ExecutionReceipt] = {}
+
+        if store is not None:
+            snapshot = store.load()
+            for proposal in snapshot.proposals:
+                proposal.validate()
+                if proposal.proposal_id in self._proposals:
+                    raise ValueError(
+                        f"Persistent state contains duplicate proposal ID: "
+                        f"{proposal.proposal_id}"
+                    )
+                self._proposals[proposal.proposal_id] = proposal
+            self._audit.extend(snapshot.audit_records)
+            for stored in snapshot.receipts:
+                self._receipts[(stored.proposal_id, stored.version)] = stored.receipt
 
     @property
     def audit_history(self) -> tuple[AuditRecord, ...]:
         return tuple(self._audit)
+
+    def execution_receipt(
+        self,
+        proposal_id: str,
+        version: int | None = None,
+    ) -> ExecutionReceipt | None:
+        proposal = self.get(proposal_id)
+        resolved_version = proposal.version if version is None else version
+        return self._receipts.get((proposal_id, resolved_version))
 
     def get(self, proposal_id: str) -> CalendarProposal:
         try:
@@ -275,8 +382,12 @@ class CalendarProposalWorkflow:
         proposal.validate()
         if proposal.proposal_id in self._proposals:
             raise ValueError("Proposal ID already exists")
-        self._proposals[proposal.proposal_id] = proposal
-        self._record(proposal, AuditAction.PREPARE, "Proposal prepared; approval pending.")
+        record = self._build_record(
+            proposal,
+            AuditAction.PREPARE,
+            "Proposal prepared; approval pending.",
+        )
+        self._commit_transition(None, proposal, record)
         return proposal
 
     def edit(
@@ -307,13 +418,13 @@ class CalendarProposalWorkflow:
             status=ProposalStatus.PENDING,
         )
         revised.validate()
-        self._proposals[proposal_id] = revised
-        self._record(
+        record = self._build_record(
             revised,
             AuditAction.EDIT,
             "Proposal revised; the displayed new version requires renewed approval.",
             decision=ProposalDecision.EDIT,
         )
+        self._commit_transition(current, revised, record)
         return DecisionResult(revised)
 
     def approve(
@@ -322,12 +433,18 @@ class CalendarProposalWorkflow:
         executor: CalendarProposalExecutor,
     ) -> DecisionResult:
         proposal = self._require_decidable(proposal_id)
-        self._record(
-            proposal,
+        executing = replace(proposal, status=ProposalStatus.EXECUTION_PENDING)
+        approval_record = self._build_record(
+            executing,
             AuditAction.APPROVE,
-            "Displayed proposal version approved for one governed execution.",
+            "Displayed proposal version approved; execution is pending verification.",
             decision=ProposalDecision.APPROVE,
         )
+        # Persist authorization before the external write. If the process stops after
+        # this point, restart recovery quarantines the operation rather than blindly
+        # presenting it for approval or issuing a second mutation.
+        self._commit_transition(proposal, executing, approval_record)
+
         try:
             receipt = executor.execute(proposal)
         except Exception as exc:
@@ -336,51 +453,67 @@ class CalendarProposalWorkflow:
                 verified=False,
                 message=f"Calendar execution failed: {exc}",
             )
+        return self._finalize_execution(executing, receipt, recovery=False)
 
-        if receipt.outcome is ExecutionOutcome.DIRECT_VERIFIED and receipt.verified:
-            status = ProposalStatus.EXECUTED
-        elif receipt.outcome is ExecutionOutcome.ICS_VERIFIED and receipt.verified:
-            status = ProposalStatus.FALLBACK_READY
-        else:
-            status = ProposalStatus.EXECUTION_FAILED
+    def recover_interrupted(
+        self,
+        proposal_id: str,
+        executor: CalendarProposalExecutor,
+    ) -> DecisionResult:
+        """Reconcile an approved operation that lacks a durable final receipt."""
+        proposal = self.get(proposal_id)
+        if proposal.status is not ProposalStatus.EXECUTION_PENDING:
+            raise ValueError(
+                f"Proposal {proposal_id} is not awaiting execution recovery"
+            )
 
-        completed = replace(proposal, status=status)
-        self._proposals[proposal_id] = completed
-        self._record(
-            completed,
-            AuditAction.EXECUTE,
-            receipt.message,
-            execution_outcome=receipt.outcome,
-            verified=receipt.verified,
-        )
-        return DecisionResult(completed, receipt)
+        recover = getattr(executor, "recover", None)
+        if not callable(recover):
+            raise RecoveryRequiredError(
+                "Calendar execution remains uncertain; the configured executor "
+                "does not support duplicate-safe recovery. No retry was attempted."
+            )
+
+        try:
+            receipt = recover(proposal)
+        except RecoveryRequiredError:
+            raise
+        except Exception as exc:
+            receipt = ExecutionReceipt(
+                outcome=ExecutionOutcome.FAILED,
+                verified=False,
+                message=f"Calendar recovery failed: {exc}",
+            )
+        return self._finalize_execution(proposal, receipt, recovery=True)
 
     def reject(self, proposal_id: str) -> DecisionResult:
+        current = self._require_decidable(proposal_id)
         proposal = replace(
-            self._require_decidable(proposal_id),
+            current,
             status=ProposalStatus.REJECTED,
         )
-        self._proposals[proposal_id] = proposal
-        self._record(
+        record = self._build_record(
             proposal,
             AuditAction.REJECT,
             "Proposal rejected; no execution occurred.",
             decision=ProposalDecision.REJECT,
         )
+        self._commit_transition(current, proposal, record)
         return DecisionResult(proposal)
 
     def defer(self, proposal_id: str) -> DecisionResult:
+        current = self._require_decidable(proposal_id)
         proposal = replace(
-            self._require_decidable(proposal_id),
+            current,
             status=ProposalStatus.DEFERRED,
         )
-        self._proposals[proposal_id] = proposal
-        self._record(
+        record = self._build_record(
             proposal,
             AuditAction.DEFER,
             "Proposal deferred; it remains eligible for a later approval queue.",
             decision=ProposalDecision.DEFER,
         )
+        self._commit_transition(current, proposal, record)
         return DecisionResult(proposal)
 
     def active_queue(self) -> tuple[CalendarProposal, ...]:
@@ -388,6 +521,14 @@ class CalendarProposalWorkflow:
             proposal
             for proposal in self._proposals.values()
             if proposal.status in {ProposalStatus.PENDING, ProposalStatus.DEFERRED}
+        )
+
+    def interrupted_executions(self) -> tuple[CalendarProposal, ...]:
+        """Return approved operations whose final outcome is not durably known."""
+        return tuple(
+            proposal
+            for proposal in self._proposals.values()
+            if proposal.status is ProposalStatus.EXECUTION_PENDING
         )
 
     def render_inline(self, proposal_id: str) -> str:
@@ -438,7 +579,33 @@ class CalendarProposalWorkflow:
             )
         return proposal
 
-    def _record(
+    def _finalize_execution(
+        self,
+        executing: CalendarProposal,
+        receipt: ExecutionReceipt,
+        *,
+        recovery: bool,
+    ) -> DecisionResult:
+        if receipt.outcome is ExecutionOutcome.DIRECT_VERIFIED and receipt.verified:
+            status = ProposalStatus.EXECUTED
+        elif receipt.outcome is ExecutionOutcome.ICS_VERIFIED and receipt.verified:
+            status = ProposalStatus.FALLBACK_READY
+        else:
+            status = ProposalStatus.EXECUTION_FAILED
+
+        completed = replace(executing, status=status)
+        prefix = "Recovery result: " if recovery else ""
+        record = self._build_record(
+            completed,
+            AuditAction.EXECUTE,
+            prefix + receipt.message,
+            execution_outcome=receipt.outcome,
+            verified=receipt.verified,
+        )
+        self._commit_transition(executing, completed, record, receipt=receipt)
+        return DecisionResult(completed, receipt)
+
+    def _build_record(
         self,
         proposal: CalendarProposal,
         action: AuditAction,
@@ -447,20 +614,44 @@ class CalendarProposalWorkflow:
         decision: ProposalDecision | None = None,
         execution_outcome: ExecutionOutcome | None = None,
         verified: bool | None = None,
-    ) -> None:
-        self._audit.append(
-            AuditRecord(
-                proposal_id=proposal.proposal_id,
-                version=proposal.version,
-                action=action,
-                status=proposal.status,
-                detail=detail,
-                recorded_at=datetime.now(timezone.utc),
-                decision=decision,
-                execution_outcome=execution_outcome,
-                verified=verified,
-            )
+    ) -> AuditRecord:
+        return AuditRecord(
+            proposal_id=proposal.proposal_id,
+            version=proposal.version,
+            action=action,
+            status=proposal.status,
+            detail=detail,
+            recorded_at=datetime.now(timezone.utc),
+            decision=decision,
+            execution_outcome=execution_outcome,
+            verified=verified,
         )
+
+    def _commit_transition(
+        self,
+        previous: CalendarProposal | None,
+        proposal: CalendarProposal,
+        audit_record: AuditRecord,
+        *,
+        receipt: ExecutionReceipt | None = None,
+    ) -> None:
+        if self._store is not None:
+            expected = (
+                ProposalCheckpoint(previous.version, previous.status)
+                if previous is not None
+                else None
+            )
+            self._store.save_transition(
+                proposal,
+                audit_record,
+                expected=expected,
+                receipt=receipt,
+            )
+
+        self._proposals[proposal.proposal_id] = proposal
+        self._audit.append(audit_record)
+        if receipt is not None:
+            self._receipts[(proposal.proposal_id, proposal.version)] = receipt
 
 
 def _event_time(event: MissionControlEvent) -> str:

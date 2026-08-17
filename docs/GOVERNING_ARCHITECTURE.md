@@ -84,6 +84,14 @@ Emailing a verified ICS artifact is an authorized fallback delivery path, not pr
 
 The binding service boundaries, approval semantics, briefing placement rules, execution paths, and progressive-automation constraints are specified in [Calendar Service Architecture](CALENDAR_SERVICE_ARCHITECTURE.md).
 
+## Persistent calendar workflow state
+
+Proposal, approval, audit, receipt, and recovery state must be owned by Mission Control behind a replaceable store boundary. Provider adapters and briefing presentation code must not own storage policy.
+
+Approval must be durable before external execution begins. An approved operation whose final result is not durable must remain outside the active approval queue and must not be retried unless the executor explicitly supports duplicate-safe reconciliation. Store corruption, incompatibility, stale updates, and final-write failures must fail loudly.
+
+The Stage 4 prototype uses SQLite as a commodity transactional implementation for the solo-operator slice. SQLite is not a constitutional dependency or a cloud synchronization strategy. The implementation decision and recovery rules are specified in [Stage 4 Persistence Decision](STAGE4_PERSISTENCE_DECISION.md).
+
 ## Implementation sequencing
 
 Build vertical slices that prove value end to end before broadening the system.
@@ -94,8 +102,9 @@ Vertical-slice sequence:
 2. Connector state/health orchestration — Prototype
 3. Direct Google Calendar path — Tested
 4. One briefing path that consumes shared capabilities — Stage 3 Tested
-5. Persistent proposal, approval, and audit state — current Stage 4 milestone
-6. Additional connectors and domain packets only after the governed path is durable
+5. Persistent proposal, approval, and audit state — Stage 4 Tested
+6. Pilot runtime durable-volume and backup/restore validation — NEXT
+7. Additional connectors and domain packets only after the governed path is operationally durable
 
 ## Architecture conflict rule
 
