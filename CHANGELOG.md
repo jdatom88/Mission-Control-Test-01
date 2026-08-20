@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-08-20 — Pilot runtime durability controls prototype
+
+Ratified the single-runtime pilot decision: one cloud Mission Control application instance owns the SQLite calendar-state file on an encrypted persistent volume, while all user devices access it through the application API. Managed shared storage remains deferred behind explicit migration triggers rather than being introduced before multiple writers, users, services, or tighter recovery requirements exist.
+
+Added an explicit marked-volume runtime boundary. Four required environment values identify separate state and backup roots. One-time bootstrap creates role/identity markers and the initial database; normal startup refuses to initialize missing state. Missing or mismatched markers, absent databases, symbolic links, unexpected file types, read-only paths, unavailable SQLite write locks, schema incompatibility, corruption, foreign-key failures, and semantic incompleteness now fail loudly.
+
+Added consistency-safe backup and restore operations using Python SQLite's online backup API. Backup validates SQLite integrity and Mission Control semantics, refuses unsafe names and overwrite, publishes the validated file without overwrite, and reports a SHA-256 digest and record counts. Restore accepts only a configured backup, refuses an existing live destination, validates a partial restoration, publishes without overwrite, reopens through normal runtime checks, and compares the final workflow snapshot with the source backup.
+
+Added an operational CLI plus the Pilot Runtime Durability Contract covering configuration, one-time bootstrap, startup health checks, backup cadence, retention, quarantine-first recovery, clean restore, fail-loud behavior, and managed-database migration triggers.
+
+Added **14 focused durability tests**. The complete repository suite now passes **55 tests**. A new separate-process acceptance bootstrapped marked roots, persisted deferred and synthetically completed proposals, created a verified online backup, deliberately removed the live database inside a temporary directory, confirmed startup failed without creating an empty replacement, restored into the clean destination, and independently verified proposals, value context, queue state, audit history, and execution receipt. It reported `STAGE5_SEPARATE_PROCESS_DURABILITY_ACCEPTANCE=PASS`, `BACKUP_RESTORE_SEMANTICS=VERIFIED`, `MISSING_STORE_FAIL_LOUD=VERIFIED`, and `LIVE_CALENDAR_MUTATIONS=0`. The Stage 4 five-process harness also remains green.
+
+Canonical GitHub Actions run #10 passed the dependency check, all 55 tests, the Stage 4 persistence acceptance, and the new pilot durability acceptance.
+
+Pilot Runtime SQLite Durability is registered as **Prototype**, not Tested. The evidence validates the host-neutral software boundary only. An actual cloud runtime, encrypted persistent state volume, independently durable backup location, external scheduler/retention policy, and deployed clean-restore rehearsal have not yet been selected or validated.
+
 ## 2026-08-17 — Persistent briefing-calendar state promoted to Tested
 
 Reran the complete Stage 4 acceptance after publication. All **15 focused persistence tests** and all **41 repository tests** passed. The five-process harness again completed prepare/defer, restore/edit, approval-before-execution, synthetic interruption, restart, duplicate-safe recovery, and final receipt verification. Its assertion gate again reported `STAGE4_SEPARATE_PROCESS_ACCEPTANCE=PASS` and `LIVE_CALENDAR_MUTATIONS=0`.

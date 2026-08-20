@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Stage 4 — persistent proposal, approval, and audit state acceptance complete.
+Pilot runtime durability controls — host-neutral prototype and synthetic acceptance complete; deployed-volume acceptance pending.
 
 ## Current milestone
 
-Define and validate the pilot runtime's durable-volume and backup/restore boundary before relying operationally on the Tested SQLite store or expanding into live briefing retrieval.
+Select and provision the actual single-instance cloud pilot runtime, encrypted state volume, and independently durable backup location; then execute the documented bootstrap, scheduled backup, and clean-restore rehearsal on that infrastructure before operational reliance or expansion into live briefing retrieval.
 
 ## Implemented
 
@@ -64,6 +64,19 @@ Define and validate the pilot runtime's durable-volume and backup/restore bounda
 - Canonical GitHub CI passed for the implementation and maturity-update heads
 - Briefing Calendar Persistent State promoted from Prototype to Tested
 - Stage 4 PR #8 merged into canonical `main`; GitHub Issue #7 closed with acceptance evidence
+- Approved pilot decision: one cloud Mission Control runtime owns SQLite on an encrypted persistent volume; user devices access state through the application API rather than database-file synchronization
+- Explicit marked state-volume and backup-volume identities with four required runtime environment values
+- One-time bootstrap separated from no-create normal startup so missing durable state cannot silently become an empty database
+- Fail-loud missing/mismatched marker, missing database, symbolic-link, unexpected-file, read-only, write-lock, schema, integrity, foreign-key, and semantic-state checks
+- Consistency-safe SQLite online backup with validation, safe naming, no-overwrite publication, SHA-256 receipt, and semantic record counts
+- Clean-destination restore with configured-source restriction, partial-copy validation, no-overwrite publication, normal runtime reopening, and snapshot comparison
+- Operational pilot storage CLI for bootstrap, check, backup, and restore
+- Pilot Runtime Durability Contract covering configuration, minimum daily backup, retention, quarantine-first recovery, monthly restore rehearsal, and managed-database migration triggers
+- Fourteen focused pilot durability tests; full regression suite passes 55 tests
+- Separate-process Stage 5 durability acceptance passed bootstrap, backup, deliberate temporary-database loss, fail-loud missing-store startup, clean restore, and semantic verification with zero live calendar mutations
+- Stage 4 separate-process acceptance remains green after the durability changes
+- Canonical GitHub Actions run #10 passed all 55 tests plus both separate-process acceptance harnesses
+- GitHub Issue #9 opened for the approved pilot durability milestone
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -73,6 +86,7 @@ Define and validate the pilot runtime's durable-volume and backup/restore bounda
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 - Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
+- Pilot Runtime SQLite Durability is Prototype; host-neutral tests and synthetic acceptance pass, but actual encrypted cloud volumes, independent backup storage, external scheduling/retention, and deployed restore acceptance remain pending
 
 ## Blockers
 
@@ -80,18 +94,22 @@ Define and validate the pilot runtime's durable-volume and backup/restore bounda
 - No remaining blocker for Stage 2 Tested maturity
 - The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
-- The SQLite prototype is a local durable store, not a multi-device cloud synchronization strategy
-- The runtime deployment location, durable-volume policy, and backup/restore procedure are not yet established
+- SQLite remains a single-runtime store, not a database file synchronized among devices or application hosts; multi-device access must route through one cloud Mission Control API
+- The software durability contract and backup/restore procedure are established, but the cloud host and actual encrypted state and backup volumes are not yet selected or provisioned
+- Application path separation cannot prove provider-level physical backup independence; the chosen deployment must establish and document it
+- No external backup scheduler or retention enforcement exists yet; the CLI must be invoked by the selected platform's scheduler
 - No full briefing runtime or user-facing approval interface exists yet
 
 ## NEXT
 
-1. Define the pilot runtime's durable-volume location, ownership, backup cadence, restore procedure, and fail-loud unavailable-volume behavior.
-2. Surface any choice between a local durable volume and a hosted shared store to Mission Control Development if it changes the intended cloud or multi-device operating model.
-3. Validate database integrity and backup/restore on the selected pilot runtime before operational reliance or Stable promotion.
-4. After the durability boundary is established, select the next governed vertical slice in Mission Control Development rather than assuming Gmail/EIS or full briefing expansion.
-5. Open the applicable GitHub issue only after the next milestone is approved.
-6. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
+1. Canonical CI is green; review and merge draft PR #10 only after user approval, and keep GitHub Issue #9 open through deployed-volume acceptance.
+2. Select and provision one cloud application runtime with an encrypted persistent state volume and a separately managed durable backup location. Do not treat a Codex workspace, repository, laptop, or disposable container filesystem as either volume.
+3. Configure explicit volume roots and identities, run the one-time bootstrap, and confirm normal startup refuses missing or mismatched storage.
+4. Configure an external minimum-daily backup schedule plus pre-migration backups and the documented seven-daily, four-weekly, three-monthly retention policy.
+5. Stop the pilot, quarantine the live database, restore a verified backup into the clean destination, and independently verify proposal, decision, audit, receipt, and queue semantics on the deployed runtime.
+6. After deployed acceptance, decide whether Pilot Runtime SQLite Durability may move from Prototype to Tested. Do not promote the persistent workflow or durability boundary to Stable without routine-use evidence.
+7. Return to Mission Control Development to select the next governed vertical slice; GitHub Issue #6 is an existing calendar-read candidate but is not automatically authorized by this milestone.
+8. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
 
