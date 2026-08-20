@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-08-20 — Railway/R2 deployment integration prototype
+
+Merged the host-neutral pilot durability controls from PR #10 into canonical
+`main` at `ff72cdfb94285dd7e77a9396f71c170b3b1921ab`. GitHub Issue #9 remains open
+for the real infrastructure gate.
+
+Selected Railway as the single-instance pilot application host and Cloudflare
+R2 as the provider-independent backup target. Added a thin S3-compatible
+adapter that reinspects the consistency-safe local SQLite backup, uploads it,
+downloads the complete object again, verifies SHA-256 metadata and bytes,
+revalidates SQLite and Mission Control workflow semantics, and issues a receipt
+only after read-back succeeds. Added safe offsite fetch into local staging with
+configured-prefix restriction and no overwrite.
+
+Added a fail-loud storage guardian with a Railway health endpoint, periodic
+marked-volume and semantic checks, and a minimum-daily verified offsite backup
+loop. Added a Dockerfile, Railway config-as-code, and a deployment runbook that
+keeps the one-volume local staging copy distinct from the independent R2
+recovery copy and preserves the one-writer boundary.
+
+Added **10 focused offsite and guardian tests**. The complete repository suite
+now passes **65 tests**. The Stage 4 and Stage 5 separate-process acceptance
+harnesses remain green, dependency checks pass, and live calendar mutations
+remain **0**.
+
+Pilot Runtime SQLite Durability remains **Prototype**. No Railway or Cloudflare
+account, paid service, volume, bucket, credential, lifecycle rule, or deployed
+restore has been created or validated. Railway volume-specific encryption
+applicability must be captured during provisioning; it is not inferred from a
+generic security control.
+
 ## 2026-08-20 — Pilot runtime durability controls prototype
 
 Ratified the single-runtime pilot decision: one cloud Mission Control application instance owns the SQLite calendar-state file on an encrypted persistent volume, while all user devices access it through the application API. Managed shared storage remains deferred behind explicit migration triggers rather than being introduced before multiple writers, users, services, or tighter recovery requirements exist.
