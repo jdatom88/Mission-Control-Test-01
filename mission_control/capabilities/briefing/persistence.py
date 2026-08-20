@@ -48,12 +48,21 @@ class PersistenceCompatibilityError(PersistenceError):
     """Stored state uses an unsupported schema or foreign layout."""
 
 
+class PersistenceUnavailableError(PersistenceError):
+    """The expected durable store is absent or cannot be opened safely."""
+
+
 class SqliteCalendarProposalStore:
     """Atomic local persistence for the Stage 4 solo-operator slice."""
 
-    def __init__(self, database_path: str | Path) -> None:
+    def __init__(
+        self,
+        database_path: str | Path,
+        *,
+        initialize_if_missing: bool = True,
+    ) -> None:
         self.database_path = Path(database_path)
-        self._initialize()
+        self._initialize(initialize_if_missing=initialize_if_missing)
 
     def load(self) -> WorkflowSnapshot:
         try:
@@ -210,9 +219,58 @@ class SqliteCalendarProposalStore:
                 "no completion should be reported."
             ) from exc
 
-    def _initialize(self) -> None:
+    def validate_integrity(self) -> WorkflowSnapshot:
+        """Verify SQLite and Mission Control semantic integrity."""
+
         try:
-            self.database_path.parent.mkdir(parents=True, exist_ok=True)
+            with self._connect() as connection:
+                integrity_rows = tuple(
+                    row[0] for row in connection.execute("PRAGMA integrity_check")
+                )
+                if integrity_rows != ("ok",):
+                    raise PersistenceCorruptionError(
+                        "Persistent calendar workflow state failed SQLite "
+                        "integrity validation."
+                    )
+                foreign_key_rows = tuple(
+                    connection.execute("PRAGMA foreign_key_check")
+                )
+                if foreign_key_rows:
+                    raise PersistenceCorruptionError(
+                        "Persistent calendar workflow state contains invalid "
+                        "foreign-key references."
+                    )
+        except PersistenceError:
+            raise
+        except (OSError, sqlite3.Error) as exc:
+            raise PersistenceCorruptionError(
+                "Persistent calendar workflow state is unavailable or corrupt."
+            ) from exc
+        return self.load()
+
+    def _initialize(self, *, initialize_if_missing: bool) -> None:
+        try:
+            if self.database_path.is_symlink():
+                raise PersistenceUnavailableError(
+                    "The calendar state database must not be a symbolic link."
+                )
+            if not initialize_if_missing:
+                if not self.database_path.parent.is_dir():
+                    raise PersistenceUnavailableError(
+                        "The expected calendar state directory is unavailable; "
+                        "no empty store was created."
+                    )
+                if not self.database_path.exists():
+                    raise PersistenceUnavailableError(
+                        "The expected calendar state database is missing; no "
+                        "empty store was created."
+                    )
+                if not self.database_path.is_file():
+                    raise PersistenceUnavailableError(
+                        "The calendar state database path is not a regular file."
+                    )
+            else:
+                self.database_path.parent.mkdir(parents=True, exist_ok=True)
             with self._connect(initialize=False) as connection:
                 tables = {
                     row[0]

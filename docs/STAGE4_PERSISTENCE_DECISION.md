@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted for the Stage 4 prototype. This is an implementation decision behind a replaceable Mission Control boundary, not a constitutional commitment to one database product.
+Accepted for Stage 4 and retained for the approved single-runtime cloud pilot. This is an implementation decision behind a replaceable Mission Control boundary, not a constitutional commitment to one database product.
 
 ## Decision context
 
@@ -54,6 +54,16 @@ OAuth credentials and provider tokens are explicitly excluded.
 - Deployment must place the database on durable storage and include it in backup/restore procedures.
 - A future hosted adapter may replace SQLite without changing the briefing approval contract.
 - Full briefing automation, Gmail/EIS retrieval, multi-user infrastructure, background execution, and new calendar providers remain out of scope.
+
+## Pilot runtime durability decision — 2026-08-20
+
+The pilot will run as one cloud Mission Control application instance owning the SQLite file on an encrypted persistent volume. Multi-device access occurs through the application API, not file synchronization. Backups reside at a separately configured durable root.
+
+Normal runtime startup is no longer permitted to initialize a missing database. One-time bootstrap is explicit. Marked state and backup roots, expected volume identities, write checks, SQLite integrity checks, online backup, validation, no-overwrite publication, clean-destination restoration, and semantic comparison implement the host-neutral safety boundary documented in [Pilot Runtime Durability Contract](PILOT_RUNTIME_DURABILITY.md).
+
+This decision does not select a hosting vendor and does not claim that synthetic acceptance proves encryption, physical storage independence, external scheduling, or provider recovery. Those properties must be validated on the selected deployed runtime before operational reliance.
+
+Managed shared storage remains deferred until a concrete trigger exists: multiple writers, multiple users, cross-service shared state, automatic failover requirements, tighter recovery objectives, cross-region availability, or a platform without reliable persistent volumes.
 
 ## Architecture-conflict assessment
 

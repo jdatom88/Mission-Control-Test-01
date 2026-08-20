@@ -92,6 +92,10 @@ Approval must be durable before external execution begins. An approved operation
 
 The Stage 4 prototype uses SQLite as a commodity transactional implementation for the solo-operator slice. SQLite is not a constitutional dependency or a cloud synchronization strategy. The implementation decision and recovery rules are specified in [Stage 4 Persistence Decision](STAGE4_PERSISTENCE_DECISION.md).
 
+For the approved pilot, one cloud Mission Control runtime owns the SQLite file on an encrypted persistent volume. All user devices access that state through the Mission Control API; they do not share the database file. A separately configured backup location, marked-volume identity checks, explicit one-time bootstrap, no-create normal startup, consistency-safe SQLite backups, clean-destination restoration, and semantic read-back form the pilot durability boundary. Missing or unexpected storage must stop the runtime rather than create an empty replacement. The complete host-neutral operating contract is specified in [Pilot Runtime Durability Contract](PILOT_RUNTIME_DURABILITY.md).
+
+The application can enforce distinct configured roots and volume identities, but the deployment platform remains responsible for encryption, physical storage independence, backup scheduling, retention, and access control. Synthetic filesystem acceptance does not prove those provider properties. A real deployed-volume backup and restore rehearsal is required before operational reliance.
+
 ## Implementation sequencing
 
 Build vertical slices that prove value end to end before broadening the system.
@@ -103,8 +107,9 @@ Vertical-slice sequence:
 3. Direct Google Calendar path — Tested
 4. One briefing path that consumes shared capabilities — Stage 3 Tested
 5. Persistent proposal, approval, and audit state — Stage 4 Tested
-6. Pilot runtime durable-volume and backup/restore validation — NEXT
-7. Additional connectors and domain packets only after the governed path is operationally durable
+6. Pilot runtime storage controls and synthetic backup/restore validation — feature-branch acceptance complete
+7. Actual cloud runtime, encrypted-volume, scheduler, and clean-restore acceptance — NEXT
+8. Additional connectors and domain packets only after the governed path is operationally durable
 
 ## Architecture conflict rule
 

@@ -33,3 +33,9 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q
+
+      - name: Run Stage 4 persistence acceptance
+        run: python scripts/stage4_persistence_acceptance.py
+
+      - name: Run pilot durability acceptance
+        run: python scripts/stage5_runtime_durability_acceptance.py
