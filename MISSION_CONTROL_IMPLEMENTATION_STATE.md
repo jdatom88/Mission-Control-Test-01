@@ -75,6 +75,7 @@ Select and provision the actual single-instance cloud pilot runtime, encrypted s
 - Fourteen focused pilot durability tests; full regression suite passes 55 tests
 - Separate-process Stage 5 durability acceptance passed bootstrap, backup, deliberate temporary-database loss, fail-loud missing-store startup, clean restore, and semantic verification with zero live calendar mutations
 - Stage 4 separate-process acceptance remains green after the durability changes
+- Canonical GitHub Actions run #10 passed all 55 tests plus both separate-process acceptance harnesses
 - GitHub Issue #9 opened for the approved pilot durability milestone
 - Repository README and dependency manifests
 
@@ -101,7 +102,7 @@ Select and provision the actual single-instance cloud pilot runtime, encrypted s
 
 ## NEXT
 
-1. Review and merge the host-neutral durability implementation only after canonical CI and user approval; keep GitHub Issue #9 open through deployed-volume acceptance.
+1. Canonical CI is green; review and merge draft PR #10 only after user approval, and keep GitHub Issue #9 open through deployed-volume acceptance.
 2. Select and provision one cloud application runtime with an encrypted persistent state volume and a separately managed durable backup location. Do not treat a Codex workspace, repository, laptop, or disposable container filesystem as either volume.
 3. Configure explicit volume roots and identities, run the one-time bootstrap, and confirm normal startup refuses missing or mismatched storage.
 4. Configure an external minimum-daily backup schedule plus pre-migration backups and the documented seven-daily, four-weekly, three-monthly retention policy.

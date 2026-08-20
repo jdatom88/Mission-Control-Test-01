@@ -12,6 +12,8 @@ Added an operational CLI plus the Pilot Runtime Durability Contract covering con
 
 Added **14 focused durability tests**. The complete repository suite now passes **55 tests**. A new separate-process acceptance bootstrapped marked roots, persisted deferred and synthetically completed proposals, created a verified online backup, deliberately removed the live database inside a temporary directory, confirmed startup failed without creating an empty replacement, restored into the clean destination, and independently verified proposals, value context, queue state, audit history, and execution receipt. It reported `STAGE5_SEPARATE_PROCESS_DURABILITY_ACCEPTANCE=PASS`, `BACKUP_RESTORE_SEMANTICS=VERIFIED`, `MISSING_STORE_FAIL_LOUD=VERIFIED`, and `LIVE_CALENDAR_MUTATIONS=0`. The Stage 4 five-process harness also remains green.
 
+Canonical GitHub Actions run #10 passed the dependency check, all 55 tests, the Stage 4 persistence acceptance, and the new pilot durability acceptance.
+
 Pilot Runtime SQLite Durability is registered as **Prototype**, not Tested. The evidence validates the host-neutral software boundary only. An actual cloud runtime, encrypted persistent state volume, independently durable backup location, external scheduler/retention policy, and deployed clean-restore rehearsal have not yet been selected or validated.
 
 ## 2026-08-17 — Persistent briefing-calendar state promoted to Tested
