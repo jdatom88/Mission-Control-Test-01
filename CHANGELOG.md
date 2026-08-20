@@ -23,7 +23,8 @@ recovery copy and preserves the one-writer boundary.
 Added **10 focused offsite and guardian tests**. The complete repository suite
 now passes **65 tests**. The Stage 4 and Stage 5 separate-process acceptance
 harnesses remain green, dependency checks pass, and live calendar mutations
-remain **0**.
+remain **0**. Canonical GitHub Actions run #13 passed the 65-test suite and both
+acceptance harnesses on draft PR #11.
 
 Pilot Runtime SQLite Durability remains **Prototype**. No Railway or Cloudflare
 account, paid service, volume, bucket, credential, lifecycle rule, or deployed

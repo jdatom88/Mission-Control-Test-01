@@ -84,6 +84,7 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 - Dockerfile, Railway config-as-code, and an operator runbook that separates code readiness from account provisioning and deployed acceptance
 - Ten focused offsite/guardian tests; full repository suite passes 65 tests
 - Stage 4 and Stage 5 separate-process acceptance harnesses remain green with zero live calendar mutations
+- Draft PR #11 is published at commit `6ffe55b8e7f10ae8e19b40ee2205c3a92b3612fb`; canonical GitHub Actions run #13 passed
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -110,7 +111,7 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 
 ## NEXT
 
-1. Review and publish the Railway/R2 deployment branch through canonical CI; keep GitHub Issue #9 open through real infrastructure acceptance.
+1. Review draft PR #11 and merge only after user approval; canonical CI is green. Keep GitHub Issue #9 open through real infrastructure acceptance.
 2. At the operator account checkpoint, approve current Railway usage billing and Cloudflare R2 checkout, connect the canonical repository, and create a private least-privilege bucket token. Never place credentials in GitHub.
 3. Provision one Railway service and one volume at `/data`; capture volume-specific encryption-at-rest evidence, configure explicit sibling state/staging roots and markers, and retain a single replica.
 4. Run the explicit one-time bootstrap, start the guardian, and confirm `/healthz` verifies storage while missing or mismatched storage fails without empty replacement.
