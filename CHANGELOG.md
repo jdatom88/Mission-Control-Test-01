@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-08-23 — Stage 5 provisioning opened
+
+Reverified draft PR #11 at head
+`843bc2b518330ba5fb2fc6e5f5a82327c249c442` with canonical GitHub Actions run
+#14 successful, marked it ready for review, and squash-merged the Railway/R2
+deployment integration into canonical `main` as
+`f7b8693968467c88506db774d2e5af0b082b22e7`.
+
+The operator reported Railway and Cloudflare account setup complete. The first
+live provisioning attempt reached Railway's GitHub sign-in boundary and a
+Cloudflare human-verification challenge, so automation stopped before any
+credential entry or provider mutation. No Railway service or volume, R2 bucket
+or token, retention control, billing action, or deployed runtime was created or
+verified. No secret was transmitted or persisted, and live calendar mutations
+remain **0**.
+
+Pilot Runtime SQLite Durability remains **Prototype**. GitHub Issue #9 remains
+open. NEXT is direct provider authentication followed by the documented private
+R2 bucket/token, single Railway service and `/data` volume, bootstrap,
+read-back-verified backup, fail-loud check, and quarantine-first restore gates.
+
 ## 2026-08-20 — Railway/R2 deployment integration prototype
 
 Merged the host-neutral pilot durability controls from PR #10 into canonical
