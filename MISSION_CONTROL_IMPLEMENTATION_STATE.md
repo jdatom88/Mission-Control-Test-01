@@ -8,7 +8,7 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Pilot runtime durability deployment — Railway/R2 code-ready prototype complete; account provisioning and deployed acceptance pending.
+Pilot runtime durability deployment — Railway/R2 code is merged into canonical `main`; provider authentication, resource provisioning, and deployed acceptance remain pending.
 
 ## Current milestone
 
@@ -84,7 +84,9 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 - Dockerfile, Railway config-as-code, and an operator runbook that separates code readiness from account provisioning and deployed acceptance
 - Ten focused offsite/guardian tests; full repository suite passes 65 tests
 - Stage 4 and Stage 5 separate-process acceptance harnesses remain green with zero live calendar mutations
-- Draft PR #11 is published at commit `6ffe55b8e7f10ae8e19b40ee2205c3a92b3612fb`; canonical GitHub Actions run #13 passed
+- PR #11 was reverified at head `843bc2b518330ba5fb2fc6e5f5a82327c249c442`, canonical GitHub Actions run #14 passed, and the deployment integration was squash-merged into `main` as `f7b8693968467c88506db774d2e5af0b082b22e7`
+- Railway and Cloudflare account setup was reported complete by the operator; no service, volume, R2 bucket, token, retention control, or deployed runtime has yet been verified
+- The first live provisioning attempt stopped at Railway GitHub authentication and Cloudflare human verification without creating infrastructure, transmitting secrets, incurring a confirmed billing action, or mutating a live calendar
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -103,7 +105,7 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 - The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
 - SQLite remains a single-runtime store, not a database file synchronized among devices or application hosts; multi-device access must route through one cloud Mission Control API
-- Railway and Cloudflare R2 are selected but the operator accounts, billing, service, volume, bucket, and least-privilege credentials are not yet provisioned
+- Railway and Cloudflare R2 are selected and account setup is operator-confirmed, but the current execution session is not authenticated to either provider; billing state, service, volume, bucket, and least-privilege credentials remain unverified and unprovisioned
 - Railway's public Trust Center lists encryption at rest, but deployed acceptance still needs volume-specific applicability evidence rather than inference
 - Application path separation cannot prove provider independence; only a successful R2 upload/read-back from the Railway runtime establishes the selected independent copy
 - The guardian supplies the daily application backup trigger, but Railway snapshot schedules and R2 retention/lifecycle enforcement are not configured until provisioning
@@ -111,8 +113,8 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 
 ## NEXT
 
-1. Review draft PR #11 and merge only after user approval; canonical CI is green. Keep GitHub Issue #9 open through real infrastructure acceptance.
-2. At the operator account checkpoint, approve current Railway usage billing and Cloudflare R2 checkout, connect the canonical repository, and create a private least-privilege bucket token. Never place credentials in GitHub.
+1. Complete Railway GitHub authentication and Cloudflare human verification directly in the provider sessions; never place credentials or verification codes in chat. Keep GitHub Issue #9 open through real infrastructure acceptance.
+2. Confirm current Railway usage billing and Cloudflare R2 checkout state, connect the canonical repository, and create a private least-privilege bucket token. Never place credentials in GitHub.
 3. Provision one Railway service and one volume at `/data`; capture volume-specific encryption-at-rest evidence, configure explicit sibling state/staging roots and markers, and retain a single replica.
 4. Run the explicit one-time bootstrap, start the guardian, and confirm `/healthz` verifies storage while missing or mismatched storage fails without empty replacement.
 5. Create an R2 backup, require full object read-back and semantic verification, enable Railway daily/weekly/monthly snapshots, and enforce the documented R2 retention policy.
