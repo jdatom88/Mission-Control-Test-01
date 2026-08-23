@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Pilot runtime durability controls — host-neutral prototype and synthetic acceptance complete; deployed-volume acceptance pending.
+Pilot runtime durability deployment — Railway/R2 code-ready prototype complete; account provisioning and deployed acceptance pending.
 
 ## Current milestone
 
-Select and provision the actual single-instance cloud pilot runtime, encrypted state volume, and independently durable backup location; then execute the documented bootstrap, scheduled backup, and clean-restore rehearsal on that infrastructure before operational reliance or expansion into live briefing retrieval.
+Provision the selected Railway single-instance pilot, persistent state volume, and independent Cloudflare R2 backup; verify volume-specific encryption evidence, then execute the documented bootstrap, scheduled read-back-verified backup, fail-loud checks, and clean-restore rehearsal before operational reliance or expansion into live briefing retrieval.
 
 ## Implemented
 
@@ -77,6 +77,14 @@ Select and provision the actual single-instance cloud pilot runtime, encrypted s
 - Stage 4 separate-process acceptance remains green after the durability changes
 - Canonical GitHub Actions run #10 passed all 55 tests plus both separate-process acceptance harnesses
 - GitHub Issue #9 opened for the approved pilot durability milestone
+- PR #10 merged into canonical `main` as commit `ff72cdfb94285dd7e77a9396f71c170b3b1921ab`
+- Railway selected as the single-instance pilot host and Cloudflare R2 selected as the provider-independent S3-compatible backup target
+- Thin S3-compatible offsite adapter with explicit bucket/prefix configuration, local-backup reinspection, full-object read-back, SHA-256 verification, semantic record-count verification, safe fetch, and no-overwrite local publication
+- Fail-loud storage guardian with `/healthz`, periodic marked-volume checks, minimum-daily offsite backup scheduling, and process failure on storage or backup failure
+- Dockerfile, Railway config-as-code, and an operator runbook that separates code readiness from account provisioning and deployed acceptance
+- Ten focused offsite/guardian tests; full repository suite passes 65 tests
+- Stage 4 and Stage 5 separate-process acceptance harnesses remain green with zero live calendar mutations
+- Draft PR #11 is published at commit `6ffe55b8e7f10ae8e19b40ee2205c3a92b3612fb`; canonical GitHub Actions run #13 passed
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -86,7 +94,7 @@ Select and provision the actual single-instance cloud pilot runtime, encrypted s
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 - Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
-- Pilot Runtime SQLite Durability is Prototype; host-neutral tests and synthetic acceptance pass, but actual encrypted cloud volumes, independent backup storage, external scheduling/retention, and deployed restore acceptance remain pending
+- Pilot Runtime SQLite Durability is Prototype; host-neutral and deployment-integration tests pass, but actual Railway volume encryption evidence, provisioned R2 storage, provider retention controls, and deployed restore acceptance remain pending
 
 ## Blockers
 
@@ -95,21 +103,23 @@ Select and provision the actual single-instance cloud pilot runtime, encrypted s
 - The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
 - SQLite remains a single-runtime store, not a database file synchronized among devices or application hosts; multi-device access must route through one cloud Mission Control API
-- The software durability contract and backup/restore procedure are established, but the cloud host and actual encrypted state and backup volumes are not yet selected or provisioned
-- Application path separation cannot prove provider-level physical backup independence; the chosen deployment must establish and document it
-- No external backup scheduler or retention enforcement exists yet; the CLI must be invoked by the selected platform's scheduler
+- Railway and Cloudflare R2 are selected but the operator accounts, billing, service, volume, bucket, and least-privilege credentials are not yet provisioned
+- Railway's public Trust Center lists encryption at rest, but deployed acceptance still needs volume-specific applicability evidence rather than inference
+- Application path separation cannot prove provider independence; only a successful R2 upload/read-back from the Railway runtime establishes the selected independent copy
+- The guardian supplies the daily application backup trigger, but Railway snapshot schedules and R2 retention/lifecycle enforcement are not configured until provisioning
 - No full briefing runtime or user-facing approval interface exists yet
 
 ## NEXT
 
-1. Canonical CI is green; review and merge draft PR #10 only after user approval, and keep GitHub Issue #9 open through deployed-volume acceptance.
-2. Select and provision one cloud application runtime with an encrypted persistent state volume and a separately managed durable backup location. Do not treat a Codex workspace, repository, laptop, or disposable container filesystem as either volume.
-3. Configure explicit volume roots and identities, run the one-time bootstrap, and confirm normal startup refuses missing or mismatched storage.
-4. Configure an external minimum-daily backup schedule plus pre-migration backups and the documented seven-daily, four-weekly, three-monthly retention policy.
-5. Stop the pilot, quarantine the live database, restore a verified backup into the clean destination, and independently verify proposal, decision, audit, receipt, and queue semantics on the deployed runtime.
-6. After deployed acceptance, decide whether Pilot Runtime SQLite Durability may move from Prototype to Tested. Do not promote the persistent workflow or durability boundary to Stable without routine-use evidence.
-7. Return to Mission Control Development to select the next governed vertical slice; GitHub Issue #6 is an existing calendar-read candidate but is not automatically authorized by this milestone.
-8. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
+1. Review draft PR #11 and merge only after user approval; canonical CI is green. Keep GitHub Issue #9 open through real infrastructure acceptance.
+2. At the operator account checkpoint, approve current Railway usage billing and Cloudflare R2 checkout, connect the canonical repository, and create a private least-privilege bucket token. Never place credentials in GitHub.
+3. Provision one Railway service and one volume at `/data`; capture volume-specific encryption-at-rest evidence, configure explicit sibling state/staging roots and markers, and retain a single replica.
+4. Run the explicit one-time bootstrap, start the guardian, and confirm `/healthz` verifies storage while missing or mismatched storage fails without empty replacement.
+5. Create an R2 backup, require full object read-back and semantic verification, enable Railway daily/weekly/monthly snapshots, and enforce the documented R2 retention policy.
+6. Stop the pilot, quarantine the live database, fetch the verified R2 object, restore into the clean destination, and independently verify proposal, decision, audit, receipt, and queue semantics.
+7. After deployed acceptance, decide whether Pilot Runtime SQLite Durability may move from Prototype to Tested. Do not promote the persistent workflow or durability boundary to Stable without routine-use evidence.
+8. Return to Mission Control Development to select the next governed vertical slice; GitHub Issue #6 is an existing calendar-read candidate but is not automatically authorized by this milestone.
+9. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
 

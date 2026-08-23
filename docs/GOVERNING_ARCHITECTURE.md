@@ -96,6 +96,14 @@ For the approved pilot, one cloud Mission Control runtime owns the SQLite file o
 
 The application can enforce distinct configured roots and volume identities, but the deployment platform remains responsible for encryption, physical storage independence, backup scheduling, retention, and access control. Synthetic filesystem acceptance does not prove those provider properties. A real deployed-volume backup and restore rehearsal is required before operational reliance.
 
+For the pilot deployment, Railway is the selected single-instance application
+host and Cloudflare R2 is the selected provider-independent object backup. The
+integration remains thin and S3-compatible rather than making R2 constitutional
+architecture. Railway's same-provider volume snapshots are defense in depth,
+not the independent recovery copy. This selection does not authorize multiple
+writers, a full briefing API, or maturity promotion without deployed read-back
+and clean-restore evidence.
+
 ## Implementation sequencing
 
 Build vertical slices that prove value end to end before broadening the system.

@@ -2,10 +2,11 @@
 
 ## Status
 
-Approved architecture and implemented host-neutral controls. Synthetic
-separate-process acceptance is complete. Actual deployed-volume acceptance is
-still required before this capability becomes Tested or the SQLite store is
-relied on operationally.
+Approved architecture, host-neutral controls, and deployment-ready
+Railway/R2 integration are implemented. Synthetic separate-process acceptance
+is complete. Actual deployed-volume and offsite-object acceptance are still
+required before this capability becomes Tested or the SQLite store is relied
+on operationally.
 
 ## Approved pilot boundary
 
@@ -25,7 +26,7 @@ Mission Control dependency and does not change calendar approval semantics.
 
 ## Required runtime configuration
 
-The pilot storage command and runtime adapter require all four values:
+The pilot storage command and runtime adapter require all four local values:
 
 ```text
 MISSION_CONTROL_STATE_VOLUME_ROOT
@@ -35,10 +36,26 @@ MISSION_CONTROL_BACKUP_VOLUME_ID
 ```
 
 The two roots must be distinct configured locations and neither may be nested
-inside the other. The deployment operator must map them to independent durable
-storage. Path separation and volume markers prevent common configuration
-mistakes, but application code cannot prove that a hosting provider placed two
-paths on physically independent storage.
+inside the other. Path separation and volume markers prevent common
+configuration mistakes, but application code cannot prove that two paths are
+on physically independent storage. In the selected Railway topology they are
+sibling roots on the same persistent volume: the backup root is validated local
+staging, while Cloudflare R2 supplies provider independence.
+
+Offsite commands additionally require:
+
+```text
+MISSION_CONTROL_OFFSITE_BUCKET
+MISSION_CONTROL_OFFSITE_PREFIX
+MISSION_CONTROL_OFFSITE_ENDPOINT_URL
+MISSION_CONTROL_OFFSITE_REGION
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+```
+
+The first four select a private S3-compatible object destination. The standard
+AWS credential variables are Railway secrets and must never be committed or
+printed.
 
 The volume IDs are explicit operator-selected identities. One-time bootstrap
 writes a role and identity marker to each mounted root. Every later open checks
@@ -93,6 +110,28 @@ SQLite's online backup API, validates the complete backup through both SQLite
 and Mission Control checks, refuses overwrite, publishes the validated copy
 atomically, and returns a SHA-256 digest plus record counts.
 
+### Verified independent backup
+
+```bash
+python scripts/pilot_calendar_storage.py backup-offsite
+```
+
+This creates and validates the local SQLite backup, uploads it through the thin
+S3-compatible adapter, downloads the complete object again, compares its
+SHA-256 metadata and bytes, and revalidates Mission Control semantics before it
+reports success. An upload response alone is not acceptance evidence.
+
+### Fetch verified offsite recovery source
+
+```bash
+python scripts/pilot_calendar_storage.py fetch-offsite <object-key>
+```
+
+This restricts the object to the configured prefix, downloads without
+overwrite, verifies checksum and SQLite semantics, and publishes the candidate
+into local backup staging. The normal clean-destination restore command remains
+the only operation allowed to create the restored live database.
+
 ### Restore rehearsal or recovery
 
 ```bash
@@ -115,8 +154,8 @@ Minimum pilot policy:
 2. Create an additional verified backup before every schema migration or
    storage-related deployment.
 3. Retain at least seven daily, four weekly, and three monthly recovery points.
-4. Keep backup storage independent from the live state volume and protect both
-   with hosting-platform encryption and access controls.
+4. Keep the verified offsite object storage independent from the live state
+   provider and protect both with provider encryption and access controls.
 5. Capture the command's timestamp, SHA-256 digest, and record counts in
    deployment logs.
 6. Perform a clean restore rehearsal at least monthly and before Stable
@@ -169,9 +208,13 @@ MISSING_STORE_FAIL_LOUD=VERIFIED
 LIVE_CALENDAR_MUTATIONS=0
 ```
 
-This evidence validates the software boundary, not a particular cloud host,
-encrypted-volume implementation, backup scheduler, or real infrastructure
-failure. Those remain required deployment acceptance work.
+The expanded repository suite also covers S3-compatible upload, full-object
+read-back, checksum mismatch failure, safe offsite fetch, no-overwrite
+publication, and guardian schedule validation. This evidence validates the
+software boundary, not a particular cloud account, encrypted-volume
+implementation, provider lifecycle rule, or real infrastructure failure. Those
+remain required deployment acceptance work. See [Railway + Cloudflare R2 Pilot
+Deployment](RAILWAY_R2_DEPLOYMENT.md).
 
 ## Migration triggers
 

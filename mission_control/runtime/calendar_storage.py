@@ -227,6 +227,31 @@ def create_consistent_backup(
     return _backup_receipt(destination, created_at, backup_snapshot)
 
 
+def inspect_consistent_backup(
+    config: PilotRuntimeStorageConfig,
+    backup_path: str | Path,
+) -> BackupReceipt:
+    """Validate an existing configured backup and return its semantic receipt."""
+
+    _validate_marked_roots(config, require_database=False)
+    try:
+        source = Path(backup_path).expanduser().resolve(strict=True)
+    except OSError as exc:
+        raise RuntimeStorageUnavailableError(
+            "The requested backup file is unavailable."
+        ) from exc
+    try:
+        source.relative_to(config.backup_directory.resolve(strict=True))
+    except ValueError as exc:
+        raise RuntimeStorageConfigurationError(
+            "Backup inspection is restricted to the configured backup directory."
+        ) from exc
+    _require_regular_file(source, "backup")
+    snapshot = _validated_snapshot(source)
+    created_at = datetime.fromtimestamp(source.stat().st_mtime, UTC)
+    return _backup_receipt(source, created_at, snapshot)
+
+
 def restore_consistent_backup(
     config: PilotRuntimeStorageConfig,
     backup_path: str | Path,
