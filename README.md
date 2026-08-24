@@ -29,7 +29,9 @@ The approved pilot durability controls are merged into canonical `main` through 
 
 Railway is selected as the single-instance pilot host and Cloudflare R2 as the independent S3-compatible backup target. The deployment integration adds full-object backup read-back, SHA-256 and semantic verification, safe offsite fetch, a fail-loud storage guardian, Docker packaging, and Railway config-as-code. The complete repository suite passes 65 tests and both separate-process acceptance harnesses remain green with zero live calendar mutations.
 
-This is deployment-ready software acceptance, not proof of an actual encrypted Railway volume or provisioned R2 bucket. Account/billing authorization, infrastructure provisioning, volume-specific encryption evidence, provider retention controls, and a deployed clean restore rehearsal remain NEXT before operational reliance.
+Railway health, private R2 upload/read-back, fail-loud storage behavior, and clean zero/non-empty restore rehearsals have passed. Pilot Runtime SQLite Durability remains Prototype because paid Railway snapshots, R2 retention controls, volume-specific encryption evidence, and routine-use evidence remain pending; the operator has deliberately deferred those subscription-dependent gates.
+
+The governed Google Calendar read path for briefings is Tested. It performs a fresh bounded retrieval, maps timed and all-day events, distinguishes healthy empty data from failures, separates runtime-capability limitations from provider outages, and bounds transient retries. Twenty-one new tests pass, with **86 tests** green repository-wide and canonical CI #23/#24 successful. Live bounded data retrieval, independent ID read-back, and an explicit healthy empty-window read passed with zero mutations. Full briefing-engine consumption and routine-use evidence remain prerequisites for Stable.
 
 The Stage 4 storage tradeoffs, safety rules, and replacement boundary are documented in [Stage 4 Persistence Decision](docs/STAGE4_PERSISTENCE_DECISION.md).
 

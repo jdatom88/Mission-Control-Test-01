@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Pilot runtime durability deployment — Railway/R2 core deployed acceptance complete; provider retention and evidence gates remain.
+Calendar completion review — Governed Google Calendar Read for Briefings and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
 
 ## Current milestone
 
-Close the remaining Stage 5 provider-control gates: capture volume-specific encryption-at-rest evidence, enable the required Railway daily/weekly/monthly snapshots, and enforce the documented R2 100-day lock/lifecycle policy. Keep the capability at Prototype until those controls are evidenced and Mission Control Development reviews the complete deployed acceptance record.
+Inventory the remaining Calendar Service gaps, separate Tested-but-not-Stable hardening from unimplemented user-facing operations, and select the smallest governed closure milestone before beginning Email Intelligence.
 
 ## Implemented
 
@@ -95,16 +95,32 @@ Close the remaining Stage 5 provider-control gates: capture volume-specific encr
 - A second deployed R2 backup/read-back used synthetic internal workflow state only: 2 proposals, 5 decision/audit records, 1 verified receipt, and 1 active deferred queue item; object `mission-control/calendar-state/deployed-semantic-acceptance-20260824T032411Z.sqlite3` verified SHA-256 `a1cb8b3a46598fce7fdcf5d1fe68aa87d7cc4c50457d67703a7833a1c918faca`
 - The semantic object was fetched, clean-restored while the guardian was stopped, and independently verified in a separate process for deferred/executed proposal status, preserved context, exact audit action sequence, verified receipt provider, and active queue membership with zero calendar-provider mutations
 - The deployed pilot was returned to its original verified zero-state database after acceptance; quarantined baseline and semantic restore evidence were retained in staging for review
+- User-directed Stage 5 disposition: keep Pilot Runtime SQLite Durability at Prototype and defer the remaining paid Railway snapshot/provider-control gates until the necessary subscription is justified
+- Provider-neutral bounded calendar-read result and canonical timed/all-day event model
+- Thin Google `events.list` path using explicit RFC3339 bounds, selected calendar ID, single-event expansion, start-time ordering, deleted-event exclusion, result cap, and optional IANA response timezone
+- Distinct read classifications for expired authorization, insufficient scope, wrong calendar/account, rate limiting, provider unavailability, malformed response, healthy data, and healthy empty windows
+- Read-only transient retry capped at three attempts; authorization, scope, account, malformed-response, and runtime-capability failures are not retried
+- Fresh-result semantics ensure a current successful retrieval supersedes historical failure state
+- Small briefing-facing retrieval boundary that reports runtime capability unavailability without falsely reporting Google Calendar unavailable
+- Twenty-one new Stage 6 tests; focused calendar read/connector/briefing suite passes 30 tests and the full repository suite passes 86 tests
+- Draft PR #16 published at commit `4ee274620d1d05827b9b64add9cf6e62c4f0ba0f`; canonical GitHub Actions run #23 passed
+- Fresh live primary-calendar retrieval for August 17–22, 2026 in `America/Los_Angeles` returned eight events, including all five known work-shift IDs at the requested 7:00 AM–5:30 PM local times
+- Independent batch read-back of the five work-shift IDs confirmed the same titles and equivalent start/end instants; the read surface rendered a different offset, so raw IANA timezone-field retrieval remains a Stable hardening item
+- Fresh live primary-calendar retrieval for August 24, 2026 from 3:00–3:01 AM `America/Los_Angeles` returned zero events and no pagination token, confirming healthy-no-matching-data behavior
+- The current execution runtime successfully invoked the connected Google Calendar read capability; runtime-capability-unavailable and later-fresh-success replacement remain covered by focused regression tests
+- Live Stage 6 calendar mutations remained zero
+- User approved promotion of Governed Google Calendar Read for Briefings and the expanded Connector State Model from Prototype to Tested on the combined regression, canonical CI, live bounded-data, independent ID read-back, healthy-empty-window, and zero-mutation evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
 
 - Calendar Service and ICS Export are Tested but not yet Stable
-- Connector state model
+- Connector State Model is Tested but not yet Stable; routine evidence across additional connectors remains pending
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 - Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
 - Pilot Runtime SQLite Durability is Prototype; deployed health, R2 full read-back, fail-loud marker handling, zero-state restore, and non-empty semantic restore pass, but Railway volume-specific encryption evidence, Railway snapshot schedules, R2 retention controls, and routine-use evidence remain pending
+- Governed Google Calendar Read for Briefings is Tested but not yet Stable; full briefing-engine consumption and routine-use evidence remain pending
 
 ## Blockers
 
@@ -118,17 +134,17 @@ Close the remaining Stage 5 provider-control gates: capture volume-specific encr
 - Provider independence is evidenced by successful full-object R2 upload/read-back from the Railway runtime with matching SHA-256 and semantic counts
 - Railway's Free plan does not expose volume backups; the required daily/weekly/monthly snapshot layer remains blocked on a Pro-plan upgrade
 - The R2 bucket has no 100-day Bucket Lock rule or matching post-retention lifecycle expiration rule; provider retention acceptance remains pending
+- The remaining paid Stage 5 provider-control gates are intentionally deferred; this is not a Tested or Stable maturity claim
 - No full briefing runtime or user-facing approval interface exists yet
 
 ## NEXT
 
-1. Capture volume-specific Railway encryption-at-rest applicability evidence; do not infer it solely from a generic Trust Center control.
-2. Upgrade Railway to a plan that supports volume backups and enable the documented daily, weekly, and monthly snapshot schedules.
-3. Configure an R2 Bucket Lock rule protecting `mission-control/calendar-state/` for at least 100 days and a lifecycle rule that expires objects only after that protected period.
-4. Review the deployed evidence in GitHub Issue #9, including both R2 object keys, matching hashes, fail-loud result, quarantine paths, independent semantic verification, and final healthy zero-state.
-5. After the remaining provider-control gates pass, return to Mission Control Development for the Prototype-to-Tested decision. Do not promote to Stable without routine-use evidence.
-6. Only after that decision, select the next governed vertical slice; GitHub Issue #6 remains a candidate but is not automatically authorized.
-7. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
+1. Complete the calendar-closure inventory against the governing architecture and open GitHub issues.
+2. Separate remaining work into: required before calendar scope can close, Stable-maturity hardening, and intentionally deferred infrastructure.
+3. Return any missing constitutional decision or material scope choice to Mission Control Development rather than inventing it here.
+4. Select and authorize the smallest remaining calendar milestone before beginning Email Intelligence.
+5. Retain raw Google timezone-field retrieval as a Stable-maturity hardening item.
+6. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
 
 ## Do not start yet
 

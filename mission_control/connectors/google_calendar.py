@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import date, datetime, timezone
 from hashlib import sha256
 from typing import Any, Mapping
 
@@ -12,6 +12,7 @@ from mission_control.capabilities.calendar.direct import (
     ProviderCalendarEvent,
 )
 from mission_control.capabilities.calendar.service import MissionControlEvent
+from mission_control.capabilities.calendar.read import CalendarReadEvent
 from mission_control.core.connector_state import ConnectorState
 
 
@@ -91,6 +92,43 @@ class GoogleCalendarConnector:
             raise _classified_error(exc, operation="read") from exc
         return _provider_event(resource)
 
+    def list_events(
+        self,
+        calendar_id: str,
+        time_min: datetime,
+        time_max: datetime,
+        *,
+        max_results: int,
+        timezone_name: str | None,
+    ) -> tuple[CalendarReadEvent, ...]:
+        kwargs: dict[str, Any] = {
+            "calendarId": calendar_id,
+            "timeMin": _rfc3339(time_min),
+            "timeMax": _rfc3339(time_max),
+            "singleEvents": True,
+            "orderBy": "startTime",
+            "showDeleted": False,
+            "maxResults": max_results,
+        }
+        if timezone_name:
+            kwargs["timeZone"] = timezone_name
+
+        try:
+            resource = self._service.events().list(**kwargs).execute()
+        except Exception as exc:
+            raise _classified_error(exc, operation="list") from exc
+
+        try:
+            items = resource.get("items", [])
+            if not isinstance(items, list):
+                raise TypeError("items must be a list")
+            return tuple(_read_event(item) for item in items)
+        except (AttributeError, KeyError, TypeError, ValueError) as exc:
+            raise ConnectorOperationError(
+                ConnectorState.EXECUTION_FAILURE,
+                "Google Calendar returned an incomplete event-list response.",
+            ) from exc
+
 
 def _event_body(event_data: MissionControlEvent, operation_id: str) -> dict[str, Any]:
     timezone_name = getattr(event_data.start.tzinfo, "key", None)
@@ -154,6 +192,42 @@ def _parse_datetime(value: str) -> datetime:
     return parsed
 
 
+def _read_event(resource: Mapping[str, Any]) -> CalendarReadEvent:
+    event_id = str(resource["id"])
+    start_resource = resource["start"]
+    end_resource = resource["end"]
+
+    if "dateTime" in start_resource and "dateTime" in end_resource:
+        start: datetime | date = _parse_datetime(start_resource["dateTime"])
+        end: datetime | date = _parse_datetime(end_resource["dateTime"])
+        all_day = False
+    elif "date" in start_resource and "date" in end_resource:
+        start = date.fromisoformat(start_resource["date"])
+        end = date.fromisoformat(end_resource["date"])
+        all_day = True
+    else:
+        raise ValueError("Google Calendar returned inconsistent event bounds")
+
+    return CalendarReadEvent(
+        event_id=event_id,
+        title=str(resource.get("summary", "")),
+        start=start,
+        end=end,
+        all_day=all_day,
+        timezone_name=start_resource.get("timeZone"),
+        description=str(resource.get("description", "")),
+        location=str(resource.get("location", "")),
+        status=str(resource.get("status", "confirmed")),
+        event_url=resource.get("htmlLink"),
+    )
+
+
+def _rfc3339(value: datetime) -> str:
+    if value.tzinfo is None:
+        raise ValueError("Google Calendar read bounds must be timezone-aware")
+    return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
 def _classified_error(exc: Exception, *, operation: str) -> ConnectorOperationError:
     status = _http_status(exc)
     if status == 401:
@@ -161,14 +235,24 @@ def _classified_error(exc: Exception, *, operation: str) -> ConnectorOperationEr
         message = "Google Calendar authorization has expired."
     elif status == 403:
         state = ConnectorState.INSUFFICIENT_SCOPE
-        message = "Google Calendar is connected without required write access."
+        required_access = "read" if operation == "list" else "write"
+        message = (
+            "Google Calendar is connected without required "
+            f"{required_access} access."
+        )
     elif status == 404 and operation == "access":
         state = ConnectorState.WRONG_ACCOUNT
         message = "The connected Google account cannot access the selected calendar."
     elif status == 404 and operation == "read":
         state = ConnectorState.HEALTHY_NO_MATCHING_DATA
         message = "Google Calendar did not return the created event during verification."
-    elif status == 429 or (status is not None and status >= 500):
+    elif status == 404 and operation == "list":
+        state = ConnectorState.WRONG_ACCOUNT
+        message = "The connected Google account cannot access the selected calendar."
+    elif status == 429:
+        state = ConnectorState.RATE_LIMITED
+        message = f"Google Calendar temporarily rate limited the {operation} request."
+    elif status is not None and status >= 500:
         state = ConnectorState.CONNECTOR_UNAVAILABLE
         message = "Google Calendar is temporarily unavailable."
     else:

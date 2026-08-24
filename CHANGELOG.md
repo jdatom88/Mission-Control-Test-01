@@ -1,5 +1,48 @@
 # Changelog
 
+## 2026-08-24 — Governed Google Calendar read prototype
+
+Accepted the operator's cost-based Stage 5 disposition: Pilot Runtime SQLite
+Durability remains **Prototype**, and the paid Railway snapshot plus remaining
+provider-control gates are deferred rather than misreported as complete. The
+calendar track continues before Email Intelligence work begins.
+
+Implemented the Issue #6 bounded calendar-read slice. Added a provider-neutral
+timed/all-day read model, an explicit RFC3339 window contract, and a thin Google
+Calendar `events.list` adapter with single-event expansion, start-time ordering,
+deleted-event exclusion, a bounded result cap, and optional IANA response
+timezone. Added distinct handling for 401, 403, 404, 429, 5xx, malformed
+responses, healthy data, and healthy empty windows.
+
+Read-only transient failures retry no more than three times. Authorization,
+scope, account, malformed-response, and runtime-capability failures do not
+retry. Each briefing invocation receives a fresh timestamped result, so a live
+success replaces stale historical failure state. An execution runtime that
+cannot invoke Calendar reports that limitation without claiming the Google
+Calendar connector is unavailable.
+
+Added **21 Stage 6 tests**. The focused calendar read, connector, and briefing
+suite passes **30 tests**, and the complete repository suite passes **86 tests**.
+The capability remains **Prototype** until canonical CI and live connected
+Google Calendar data/empty-window acceptance pass.
+
+Draft PR #16 was published and canonical GitHub Actions run #23 passed. A fresh
+read of the primary calendar for August 17–22, 2026 returned eight events,
+including all five known work shifts at 7:00 AM–5:30 PM
+`America/Los_Angeles`; independent reads of those five IDs confirmed the same
+titles and equivalent instants. A separate August 24, 2026 3:00–3:01 AM Pacific
+window returned zero events and no pagination token, validating the healthy
+empty state. The independent read surface rendered a different numeric offset,
+so raw IANA timezone-field retrieval remains a Stable hardening item. Live
+calendar mutations remained **0**. Maturity remains **Prototype** pending the
+explicit promotion decision.
+
+The operator approved promotion after reviewing the complete evidence.
+Governed Google Calendar Read for Briefings and the expanded Connector State
+Model are promoted from **Prototype** to **Tested**. Neither is Stable: the read
+path still needs full briefing-engine consumption and routine-use evidence, and
+the shared state model needs routine evidence across additional connectors.
+
 ## 2026-08-23 — Deployed Railway/R2 durability acceptance
 
 Provisioned the Railway single-instance pilot and private Cloudflare R2 backup

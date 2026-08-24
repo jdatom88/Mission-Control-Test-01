@@ -93,6 +93,25 @@ Equivalent instants alone do not satisfy timezone verification when the approved
 
 If Google reports that the deterministic event ID already exists, the connector reads that event instead of blindly repeating the create request. The caller must preserve the Mission Control operation ID with the approval/audit record so retry remains duplicate-safe.
 
+### Governed briefing read path
+
+Every briefing run performs a new bounded calendar read for an explicit
+timezone-aware start and end. The provider adapter maps timed and all-day events
+into the canonical read model and returns either healthy data or a healthy empty
+window. Historical status text is never used as the current result.
+
+The Google read adapter uses `events.list` with the selected calendar ID,
+RFC3339 bounds, recurring-event expansion, start-time ordering, deleted-event
+exclusion, a bounded result limit, and an optional IANA response timezone. HTTP
+401, 403, 404, 429, and 5xx outcomes remain distinct. Read-only rate-limit and
+provider-unavailable responses may be attempted up to three times; auth, scope,
+account, malformed-response, and runtime-capability failures are not retried.
+
+If the current execution runtime cannot invoke Calendar, the briefing reports
+the runtime limitation for that run. It must not call Google Calendar
+unavailable when the connector has not failed. A later fresh successful read
+supersedes the earlier runtime failure.
+
 ### Universal ICS fallback
 
 Canonical event → schema validation → ICS adapter → maintained `icalendar` library → parse-back validation → semantic and artifact checks → verified `.ics` file.

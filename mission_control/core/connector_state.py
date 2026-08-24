@@ -10,6 +10,7 @@ class ConnectorState(str, Enum):
     WRONG_ACCOUNT = "connected_wrong_account"
     AUTH_EXPIRED = "authentication_expired"
     RUNTIME_CAPABILITY_UNAVAILABLE = "runtime_capability_unavailable"
+    RATE_LIMITED = "rate_limited"
     CONNECTOR_UNAVAILABLE = "connector_unavailable"
     EXECUTION_FAILURE = "execution_failure"
     VERIFICATION_FAILURE = "verification_failure"
@@ -26,6 +27,7 @@ def user_message(state: ConnectorState) -> str:
         ConnectorState.RUNTIME_CAPABILITY_UNAVAILABLE: (
             "This execution runtime cannot invoke the connector capability, but the connector itself may still be healthy."
         ),
+        ConnectorState.RATE_LIMITED: "The external provider is temporarily rate limiting requests.",
         ConnectorState.CONNECTOR_UNAVAILABLE: "The external connector or provider is currently unavailable.",
         ConnectorState.EXECUTION_FAILURE: "The connector was reached, but the requested operation failed.",
         ConnectorState.VERIFICATION_FAILURE: "The operation ran, but its result could not be verified.",
