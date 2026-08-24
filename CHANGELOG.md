@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-08-24 — Governance, handoff, and Stage 7 CI reconciliation
+
+Reconciled the canonical handoff after Calendar Runtime Assembly promotion. The
+implementation state now records PR #19 and Issue #18 as complete and identifies
+the Knowledge Layer Foundation as the next authorized product milestone.
+
+Recorded Development Charter Amendment 001. Railway/R2 is explicitly limited to
+one operator, one runtime writer, and one operator-owned state boundary. It does
+not authorize multi-user functionality. Paid Railway snapshots, provider
+retention controls, and related Stage 5 hardening remain deferred until Pilot
+RC1 or an equivalent whole-OS working prototype justifies the spend and receives
+explicit operator approval.
+
+Made the Stage 7 acceptance script directly runnable using the same repository
+root initialization used by the Stage 4 and Stage 5 harnesses. Canonical CI now
+runs Stage 7 acceptance in addition to the full regression suite and Stage 4/5
+acceptance. No capability maturity changed in this maintenance update.
+
 ## 2026-08-24 — Calendar Runtime Assembly prototype
 
 Implemented the approved thin Calendar Runtime Assembly without building the

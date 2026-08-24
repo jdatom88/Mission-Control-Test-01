@@ -35,6 +35,10 @@ The governed Google Calendar read path for briefings is Tested. It performs a fr
 
 The Calendar Runtime Assembly is Tested. Its thin boundary performs a fresh read, renders current calendar context plus inline proposals and the reinforced approval queue, and delegates durable decisions and execution to the existing Tested workflow. Eight focused tests and **94 repository tests** pass. The combined synthetic acceptance verifies read-to-queue composition, all four decisions, verified execution, restart restoration, and zero live calendar mutations; canonical CI #31 passed. The current calendar implementation track is closed at Tested. This does not claim a full Briefing Engine or Stable maturity.
 
+The next authorized product milestone is the **Knowledge Layer Foundation**: an Executive Status Packet schema and validator, explicit user/domain data boundaries, and a small evidence/provenance contract shared by future Calendar, Gmail, briefing, RIE, and MCOM consumers. Gmail Intelligence and the full Briefing Engine remain subsequent vertical slices.
+
+Railway/R2 remains a single-operator durability deployment, not a multi-user product runtime. Paid snapshot and provider-retention hardening is deliberately deferred until Pilot RC1 or an equivalent whole-OS working prototype justifies the cost.
+
 The Stage 4 storage tradeoffs, safety rules, and replacement boundary are documented in [Stage 4 Persistence Decision](docs/STAGE4_PERSISTENCE_DECISION.md).
 
 The runtime configuration, backup cadence, restore procedure, fail-loud rules, and acceptance boundary are documented in [Pilot Runtime Durability Contract](docs/PILOT_RUNTIME_DURABILITY.md).
