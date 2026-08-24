@@ -120,14 +120,14 @@ Build vertical slices that prove value end to end before broadening the system.
 Vertical-slice sequence:
 
 1. Calendar Service vertical slice — Tested
-2. Connector state/health orchestration — Prototype
+2. Connector state/health orchestration — Tested
 3. Direct Google Calendar path — Tested
 4. One briefing path that consumes shared capabilities — Stage 3 Tested
 5. Persistent proposal, approval, and audit state — Stage 4 Tested
 6. Pilot runtime storage controls and synthetic backup/restore validation — feature-branch acceptance complete
 7. Actual cloud runtime and independent clean-restore acceptance — core deployed acceptance complete; paid snapshot/retention evidence remains deferred at Prototype
-8. Governed Google Calendar read path for briefings — Prototype implementation complete; live acceptance NEXT
-9. Calendar-closure review before Email Intelligence or other domain expansion
+8. Governed Google Calendar read path for briefings — Tested
+9. Calendar-closure review before Email Intelligence or other domain expansion — in progress
 
 ## Architecture conflict rule
 
