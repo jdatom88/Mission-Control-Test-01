@@ -81,7 +81,12 @@ Development decision.
 
 ## Recommended NEXT milestone
 
-Specify and implement the smallest Calendar Runtime Assembly boundary and its
-combined acceptance harness. Reuse the existing Calendar Service, briefing
-retrieval, proposal workflow, SQLite store, direct Google connector, and ICS
-fallback without duplicating their policy or provider logic.
+The smallest Calendar Runtime Assembly boundary and its combined synthetic
+acceptance harness are now implemented at Prototype maturity. The implementation
+reuses the existing Calendar Service, briefing retrieval, proposal workflow,
+SQLite store, direct connector contract, and ICS fallback without duplicating
+their policy or provider logic.
+
+NEXT: run canonical CI, review the complete evidence for Tested promotion, and,
+if accepted, close Issue #18 and the current calendar implementation track at
+Tested before beginning Email Intelligence.

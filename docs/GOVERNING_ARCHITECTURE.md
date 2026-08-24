@@ -127,7 +127,8 @@ Vertical-slice sequence:
 6. Pilot runtime storage controls and synthetic backup/restore validation — feature-branch acceptance complete
 7. Actual cloud runtime and independent clean-restore acceptance — core deployed acceptance complete; paid snapshot/retention evidence remains deferred at Prototype
 8. Governed Google Calendar read path for briefings — Tested
-9. Calendar-closure review before Email Intelligence or other domain expansion — in progress
+9. Calendar-closure review before Email Intelligence or other domain expansion — complete; narrow assembly milestone approved
+10. Calendar Runtime Assembly — Prototype implementation and synthetic acceptance complete; canonical CI and promotion review NEXT
 
 ## Architecture conflict rule
 

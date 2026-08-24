@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-08-24 — Calendar Runtime Assembly prototype
+
+Implemented the approved thin Calendar Runtime Assembly without building the
+full Briefing Engine. One provider-neutral boundary now composes a fresh bounded
+calendar read, truthful calendar-context rendering, inline proposal
+reinforcement, the applicable approval queue, and the existing durable
+Approve/Edit/Reject/Defer and execution/recovery workflow.
+
+Added **8 focused tests** covering timed and all-day context, healthy empty
+windows, runtime-capability limitations, all four decisions, verified direct
+execution semantics, truthful ICS fallback, and persistent restart restoration.
+The full repository suite passes **94 tests**. Stage 4 and Stage 5 acceptance
+harnesses remain green.
+
+Added a combined synthetic Stage 7 acceptance. It passed fresh read-to-queue
+composition, durable defer/edit/approve transitions, verified synthetic
+execution, restart restoration of audit and receipt state, and reported
+
+- `STAGE7_CALENDAR_RUNTIME_ACCEPTANCE=PASS`
+- `FRESH_READ_AND_REINFORCED_QUEUE=VERIFIED`
+- `DURABLE_DECISION_AND_RESTART=VERIFIED`
+- `SYNTHETIC_PROVIDER_VERIFICATION=VERIFIED`
+- `LIVE_CALENDAR_MUTATIONS=0`
+
+Calendar Runtime Assembly remains **Prototype** pending canonical CI and review.
+No live calendar mutation, Email Intelligence work, full Briefing Engine work,
+Stable promotion, or deferred Stage 5 provider-control work occurred.
+
 ## 2026-08-24 — Governed Google Calendar read prototype
 
 Accepted the operator's cost-based Stage 5 disposition: Pilot Runtime SQLite
