@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Calendar completion review — Governed Google Calendar Read for Briefings and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
+Calendar completion review — the closure inventory is documented. Governed Google Calendar Read for Briefings and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
 
 ## Current milestone
 
-Inventory the remaining Calendar Service gaps, separate Tested-but-not-Stable hardening from unimplemented user-facing operations, and select the smallest governed closure milestone before beginning Email Intelligence.
+Obtain Mission Control Development approval for the recommended narrow Calendar Runtime Assembly acceptance, then implement it before beginning Email Intelligence.
 
 ## Implemented
 
@@ -103,7 +103,7 @@ Inventory the remaining Calendar Service gaps, separate Tested-but-not-Stable ha
 - Fresh-result semantics ensure a current successful retrieval supersedes historical failure state
 - Small briefing-facing retrieval boundary that reports runtime capability unavailability without falsely reporting Google Calendar unavailable
 - Twenty-one new Stage 6 tests; focused calendar read/connector/briefing suite passes 30 tests and the full repository suite passes 86 tests
-- Draft PR #16 published at commit `4ee274620d1d05827b9b64add9cf6e62c4f0ba0f`; canonical GitHub Actions run #23 passed
+- PR #16 merged to `main` as `b31a40b312a453eb55fb5923d9440070bbab7731`; canonical GitHub Actions run #25 passed and Issue #6 closed with acceptance evidence
 - Fresh live primary-calendar retrieval for August 17–22, 2026 in `America/Los_Angeles` returned eight events, including all five known work-shift IDs at the requested 7:00 AM–5:30 PM local times
 - Independent batch read-back of the five work-shift IDs confirmed the same titles and equivalent start/end instants; the read surface rendered a different offset, so raw IANA timezone-field retrieval remains a Stable hardening item
 - Fresh live primary-calendar retrieval for August 24, 2026 from 3:00–3:01 AM `America/Los_Angeles` returned zero events and no pagination token, confirming healthy-no-matching-data behavior
@@ -139,12 +139,10 @@ Inventory the remaining Calendar Service gaps, separate Tested-but-not-Stable ha
 
 ## NEXT
 
-1. Complete the calendar-closure inventory against the governing architecture and open GitHub issues.
-2. Separate remaining work into: required before calendar scope can close, Stable-maturity hardening, and intentionally deferred infrastructure.
-3. Return any missing constitutional decision or material scope choice to Mission Control Development rather than inventing it here.
-4. Select and authorize the smallest remaining calendar milestone before beginning Email Intelligence.
-5. Retain raw Google timezone-field retrieval as a Stable-maturity hardening item.
-6. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
+1. Review `docs/CALENDAR_CLOSURE_REVIEW.md` in Mission Control Development and approve or revise its proposed closure definition.
+2. If approved, specify and implement the narrow Calendar Runtime Assembly boundary and combined acceptance harness without building the full Briefing Engine.
+3. Retain raw Google timezone-field retrieval and the other named operational extensions as Stable-maturity hardening rather than implying completion.
+4. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
 
 ## Do not start yet
 

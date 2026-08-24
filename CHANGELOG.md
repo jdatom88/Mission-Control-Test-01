@@ -43,6 +43,19 @@ Model are promoted from **Prototype** to **Tested**. Neither is Stable: the read
 path still needs full briefing-engine consumption and routine-use evidence, and
 the shared state model needs routine evidence across additional connectors.
 
+Canonical CI run #25 passed on the promotion head. PR #16 was marked ready and
+squash-merged to `main` as `b31a40b312a453eb55fb5923d9440070bbab7731`;
+Issue #6 was closed with the acceptance evidence. The calendar-closure review
+is now in progress.
+
+Added `docs/CALENDAR_CLOSURE_REVIEW.md`. The review identifies one recommended
+closure milestone: a narrow combined runtime acceptance across the already
+Tested read, proposal, approval, persistence, direct-write, and ICS-fallback
+boundaries. It explicitly separates that seam from the full Briefing Engine,
+Stable hardening, and the subscription-dependent Issue #9 deferral. The closure
+definition awaits Mission Control Development approval rather than being
+invented during implementation.
+
 ## 2026-08-23 — Deployed Railway/R2 durability acceptance
 
 Provisioned the Railway single-instance pilot and private Cloudflare R2 backup
