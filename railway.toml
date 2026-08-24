@@ -3,7 +3,7 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "python scripts/pilot_calendar_runtime.py"
+startCommand = "/bin/sh -c \"mkdir -p /data/state-volume /data/backup-staging && python scripts/pilot_calendar_storage.py bootstrap && exec python scripts/pilot_calendar_runtime.py\""
 healthcheckPath = "/healthz"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
