@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Pilot runtime durability deployment — Railway/R2 code-ready prototype complete; account provisioning and deployed acceptance pending.
+Pilot runtime durability deployment — Railway/R2 core deployed acceptance complete; provider retention and evidence gates remain.
 
 ## Current milestone
 
-Provision the selected Railway single-instance pilot, persistent state volume, and independent Cloudflare R2 backup; verify volume-specific encryption evidence, then execute the documented bootstrap, scheduled read-back-verified backup, fail-loud checks, and clean-restore rehearsal before operational reliance or expansion into live briefing retrieval.
+Close the remaining Stage 5 provider-control gates: capture volume-specific encryption-at-rest evidence, enable the required Railway daily/weekly/monthly snapshots, and enforce the documented R2 100-day lock/lifecycle policy. Keep the capability at Prototype until those controls are evidenced and Mission Control Development reviews the complete deployed acceptance record.
 
 ## Implemented
 
@@ -85,6 +85,16 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 - Ten focused offsite/guardian tests; full repository suite passes 65 tests
 - Stage 4 and Stage 5 separate-process acceptance harnesses remain green with zero live calendar mutations
 - Draft PR #11 is published at commit `6ffe55b8e7f10ae8e19b40ee2205c3a92b3612fb`; canonical GitHub Actions run #13 passed
+- Canonical PR #14 merged and Railway returned from the one-time bootstrap command to the established fail-loud guardian startup
+- Railway single-instance service is deployed with one persistent volume, one replica, explicit marked state/staging roots, and an unexposed service boundary
+- Deployed `/healthz` returned HTTP 200 with `storage: verified`; the independent storage check reported zero-state counts without creating replacement data
+- The bucket-scoped Cloudflare R2 credential was rotated after the original access-key value was found invalid, then transferred directly into sealed Railway variables without repository or log exposure
+- Railway produced and fully read back `mission-control/calendar-state/deployed-bootstrap-acceptance-20260824T031957Z.sqlite3` from the private R2 bucket with SHA-256 `cb003d6e3c54e53e69f8601621ffda664008fda2e4a403b559a5066509f9cdab`
+- Removing the deployed state-volume marker caused exit 2 with the expected fail-loud error; the existing database remained present, the marker was restored, and the storage check returned verified
+- The zero-state R2 object was fetched into clean staging, the guardian was stopped, the live database was quarantined, the backup restored only into the clean destination, the SHA-256 matched, and post-restore health returned HTTP 200
+- A second deployed R2 backup/read-back used synthetic internal workflow state only: 2 proposals, 5 decision/audit records, 1 verified receipt, and 1 active deferred queue item; object `mission-control/calendar-state/deployed-semantic-acceptance-20260824T032411Z.sqlite3` verified SHA-256 `a1cb8b3a46598fce7fdcf5d1fe68aa87d7cc4c50457d67703a7833a1c918faca`
+- The semantic object was fetched, clean-restored while the guardian was stopped, and independently verified in a separate process for deferred/executed proposal status, preserved context, exact audit action sequence, verified receipt provider, and active queue membership with zero calendar-provider mutations
+- The deployed pilot was returned to its original verified zero-state database after acceptance; quarantined baseline and semantic restore evidence were retained in staging for review
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -94,7 +104,7 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 - Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
-- Pilot Runtime SQLite Durability is Prototype; host-neutral and deployment-integration tests pass, but actual Railway volume encryption evidence, provisioned R2 storage, provider retention controls, and deployed restore acceptance remain pending
+- Pilot Runtime SQLite Durability is Prototype; deployed health, R2 full read-back, fail-loud marker handling, zero-state restore, and non-empty semantic restore pass, but Railway volume-specific encryption evidence, Railway snapshot schedules, R2 retention controls, and routine-use evidence remain pending
 
 ## Blockers
 
@@ -103,23 +113,22 @@ Provision the selected Railway single-instance pilot, persistent state volume, a
 - The live connector read-back does not expose the provider's raw `start.timeZone` and `end.timeZone` values; retain this as a Stable-maturity hardening item
 - OAuth credentials remain externally managed; no credential or token file belongs in the repository
 - SQLite remains a single-runtime store, not a database file synchronized among devices or application hosts; multi-device access must route through one cloud Mission Control API
-- Railway and Cloudflare R2 are selected but the operator accounts, billing, service, volume, bucket, and least-privilege credentials are not yet provisioned
+- Railway and Cloudflare R2 are provisioned for the single-instance pilot; credentials remain externally managed and must never be placed in GitHub
 - Railway's public Trust Center lists encryption at rest, but deployed acceptance still needs volume-specific applicability evidence rather than inference
-- Application path separation cannot prove provider independence; only a successful R2 upload/read-back from the Railway runtime establishes the selected independent copy
-- The guardian supplies the daily application backup trigger, but Railway snapshot schedules and R2 retention/lifecycle enforcement are not configured until provisioning
+- Provider independence is evidenced by successful full-object R2 upload/read-back from the Railway runtime with matching SHA-256 and semantic counts
+- Railway's Free plan does not expose volume backups; the required daily/weekly/monthly snapshot layer remains blocked on a Pro-plan upgrade
+- The R2 bucket has no 100-day Bucket Lock rule or matching post-retention lifecycle expiration rule; provider retention acceptance remains pending
 - No full briefing runtime or user-facing approval interface exists yet
 
 ## NEXT
 
-1. Review draft PR #11 and merge only after user approval; canonical CI is green. Keep GitHub Issue #9 open through real infrastructure acceptance.
-2. At the operator account checkpoint, approve current Railway usage billing and Cloudflare R2 checkout, connect the canonical repository, and create a private least-privilege bucket token. Never place credentials in GitHub.
-3. Provision one Railway service and one volume at `/data`; capture volume-specific encryption-at-rest evidence, configure explicit sibling state/staging roots and markers, and retain a single replica.
-4. Run the explicit one-time bootstrap, start the guardian, and confirm `/healthz` verifies storage while missing or mismatched storage fails without empty replacement.
-5. Create an R2 backup, require full object read-back and semantic verification, enable Railway daily/weekly/monthly snapshots, and enforce the documented R2 retention policy.
-6. Stop the pilot, quarantine the live database, fetch the verified R2 object, restore into the clean destination, and independently verify proposal, decision, audit, receipt, and queue semantics.
-7. After deployed acceptance, decide whether Pilot Runtime SQLite Durability may move from Prototype to Tested. Do not promote the persistent workflow or durability boundary to Stable without routine-use evidence.
-8. Return to Mission Control Development to select the next governed vertical slice; GitHub Issue #6 is an existing calendar-read candidate but is not automatically authorized by this milestone.
-9. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
+1. Capture volume-specific Railway encryption-at-rest applicability evidence; do not infer it solely from a generic Trust Center control.
+2. Upgrade Railway to a plan that supports volume backups and enable the documented daily, weekly, and monthly snapshot schedules.
+3. Configure an R2 Bucket Lock rule protecting `mission-control/calendar-state/` for at least 100 days and a lifecycle rule that expires objects only after that protected period.
+4. Review the deployed evidence in GitHub Issue #9, including both R2 object keys, matching hashes, fail-loud result, quarantine paths, independent semantic verification, and final healthy zero-state.
+5. After the remaining provider-control gates pass, return to Mission Control Development for the Prototype-to-Tested decision. Do not promote to Stable without routine-use evidence.
+6. Only after that decision, select the next governed vertical slice; GitHub Issue #6 remains a candidate but is not automatically authorized.
+7. Retain raw Google timezone-field retrieval as a separate Stable-maturity hardening item.
 
 ## Do not start yet
 
