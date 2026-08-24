@@ -18,6 +18,13 @@ root initialization used by the Stage 4 and Stage 5 harnesses. Canonical CI now
 runs Stage 7 acceptance in addition to the full regression suite and Stage 4/5
 acceptance. No capability maturity changed in this maintenance update.
 
+Added a mandatory canonical-state preflight to every implementation handoff.
+Sessions must identify branch, ahead/behind state, and local changes before
+implementation begins; stale or dirty checkouts must be preserved and
+reconciled before work continues. Status handoffs must report stage, changes,
+validation, maturity, blockers/cost deferrals, and one plain-language next
+milestone so the operator can retain control as the system grows.
+
 ## 2026-08-24 — Calendar Runtime Assembly prototype
 
 Implemented the approved thin Calendar Runtime Assembly without building the

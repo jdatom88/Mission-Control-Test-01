@@ -170,11 +170,18 @@ Design and validate the first shared Knowledge Layer vertical slice: an Executiv
 
 ## Handoff rule
 
-Every implementation session should begin by reading:
+Every implementation session must begin with a canonical-state preflight:
+
+1. Fetch the current canonical `main` reference.
+2. Report the active branch, whether it is ahead of or behind canonical `main`, and whether tracked or untracked local changes exist.
+3. If the checkout is behind or dirty, stop implementation work. Preserve local changes recoverably, then reconcile or fast-forward before creating a work branch.
+4. Never use a stale local implementation-state file as authority over a newer canonical GitHub version.
+
+After that preflight, read:
 
 1. `MISSION_CONTROL_IMPLEMENTATION_STATE.md`
 2. `docs/GOVERNING_ARCHITECTURE.md`
 3. `CAPABILITY_REGISTRY.md`
 4. the open GitHub issue for the current milestone
 
-At the end of meaningful work, update this file so the `NEXT` section remains the authoritative continuation point.
+At the end of meaningful work, update this file so the `NEXT` section remains the authoritative continuation point. The handoff/status report must state the current product stage, what changed, validation evidence, maturity changes, unresolved blockers or cost deferrals, and the single next milestone in plain language.
