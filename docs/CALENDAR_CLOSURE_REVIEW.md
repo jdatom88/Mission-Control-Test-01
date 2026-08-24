@@ -66,17 +66,18 @@ volume-specific encryption evidence, and routine-use evidence. The operator has
 explicitly deferred those subscription-dependent gates. The runtime must retain
 fail-loud behavior and must not be represented as Stable in the meantime.
 
-## Decision requiring Mission Control Development approval
+## Approved closure definition
 
-The recommended closure definition is: complete the narrow Calendar Runtime
+Mission Control Development approved the closure definition on August 24, 2026:
+complete the narrow Calendar Runtime
 Assembly acceptance, then close the calendar implementation track at Tested and
 begin Email Intelligence while retaining the named Stable hardening and Issue #9
 as truthful follow-on work.
 
-If “calendar complete” is instead intended to require the full user-facing
+This approval does not redefine “calendar complete” to require the full user-facing
 Briefing Engine or every designed calendar operation before Email Intelligence,
-that is a material scope change. It must be decided in Mission Control
-Development rather than inferred during implementation.
+which would be a material scope change requiring a separate Mission Control
+Development decision.
 
 ## Recommended NEXT milestone
 

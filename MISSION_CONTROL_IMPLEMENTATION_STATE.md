@@ -12,7 +12,7 @@ Calendar completion review — the closure inventory is documented. Governed Goo
 
 ## Current milestone
 
-Obtain Mission Control Development approval for the recommended narrow Calendar Runtime Assembly acceptance, then implement it before beginning Email Intelligence.
+Implement and validate the approved narrow Calendar Runtime Assembly boundary before beginning Email Intelligence.
 
 ## Implemented
 
@@ -139,8 +139,8 @@ Obtain Mission Control Development approval for the recommended narrow Calendar 
 
 ## NEXT
 
-1. Review `docs/CALENDAR_CLOSURE_REVIEW.md` in Mission Control Development and approve or revise its proposed closure definition.
-2. If approved, specify and implement the narrow Calendar Runtime Assembly boundary and combined acceptance harness without building the full Briefing Engine.
+1. Specify and implement the approved narrow Calendar Runtime Assembly boundary and combined acceptance harness without building the full Briefing Engine.
+2. Validate one invocation across fresh read, briefing-facing context, inline proposal, reinforced queue, durable decision, verified execution or ICS fallback, restart restoration, and truthful audit/receipt state.
 3. Retain raw Google timezone-field retrieval and the other named operational extensions as Stable-maturity hardening rather than implying completion.
 4. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
 

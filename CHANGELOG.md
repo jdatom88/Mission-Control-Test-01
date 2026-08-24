@@ -53,8 +53,9 @@ closure milestone: a narrow combined runtime acceptance across the already
 Tested read, proposal, approval, persistence, direct-write, and ICS-fallback
 boundaries. It explicitly separates that seam from the full Briefing Engine,
 Stable hardening, and the subscription-dependent Issue #9 deferral. The closure
-definition awaits Mission Control Development approval rather than being
-invented during implementation.
+definition was approved by Mission Control Development on August 24, 2026. The
+narrow Calendar Runtime Assembly is now the authorized NEXT milestone; the full
+Briefing Engine and Email Intelligence remain out of scope for that milestone.
 
 ## 2026-08-23 — Deployed Railway/R2 durability acceptance
 
