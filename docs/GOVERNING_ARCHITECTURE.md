@@ -158,6 +158,26 @@ The application must:
 
 A native or installable application remains a later delivery option using the same backend boundaries.
 
+## Knowledge Layer packet boundary
+
+The first Generation 1 Knowledge Layer record is the versioned Executive Status
+Packet. JSON is the canonical interchange format. Mission Control owns the
+packet semantics while Pydantic 2 supplies replaceable validation and JSON
+Schema mechanics.
+
+Version `1.0` requires domain/project identity, lifecycle status, an
+offset-aware update time, current focus, progress, risks, opportunities, active
+tasks, pending decisions, next milestone, overall confidence, and provenance.
+Provenance distinguishes facts, assumptions, inferences, predictions, and
+recommendations while preserving source identity/reference, observation time,
+confidence, and rationale.
+
+Unknown fields and unsupported versions fail loudly; no future data is silently
+discarded. Real operator packets live outside the product repository. Runtime
+state uses a separate, non-nested external root. Credentials come only from a
+sealed environment or encrypted runtime credential store. The complete contract
+is specified in [Knowledge Layer Foundation](KNOWLEDGE_LAYER_FOUNDATION.md).
+
 ## Implementation sequencing
 
 Build vertical slices that prove value end to end before broadening the system.

@@ -18,7 +18,11 @@ The private mobile-responsive Mission Control web application is the ratified Ge
 
 **Generation 1 Milestone 1 — Knowledge Layer Foundation, governed by GitHub Issue #21.**
 
-Complete and validate the Executive Status Packet schema, validator, operator/domain data boundary, and evidence/provenance contract before the security boundary, web application, or Gmail Intelligence begins.
+The Executive Status Packet schema, validator, operator/domain data boundary,
+evidence/provenance contract, synthetic fixtures, tests, and acceptance harness
+are implemented locally at **Prototype** maturity. Local validation is complete;
+publication, canonical CI, and explicit operator acceptance remain before Issue
+#23 may begin.
 
 ## Ratified Generation 1 implementation sequence
 
@@ -65,6 +69,18 @@ The following capabilities already exist and remain available to Generation 1:
 - Governed Google Calendar Read for Briefings — Tested
 - Calendar Runtime Assembly — Tested
 - Single-runtime SQLite durability and Railway/R2 deployment boundary — Prototype with deployed health, backup/read-back, fail-loud storage, and clean-restore evidence
+- Executive Status Packet Schema / Validator — Prototype with strict JSON v1.0 validation, semantic round-trip, provenance-reference integrity, synthetic fixtures, and enforced external data-root boundaries
+
+## Current Knowledge Layer validation evidence
+
+- 15 focused Knowledge Layer tests pass.
+- The complete repository suite passes 109 tests.
+- Stage 4 persistence, Stage 5 durability, and Stage 7 Calendar Runtime Assembly acceptance harnesses remain green with zero live calendar mutations.
+- The Knowledge Layer synthetic harness reports schema v1.0, semantic round-trip, and data-boundary verification.
+- Real operator data used: 0.
+- External actions performed by the Knowledge Layer acceptance: 0.
+- Dependency check passes in an isolated Python 3.12 environment.
+- Canonical GitHub CI has not run on this implementation yet.
 
 Detailed historical implementation and acceptance evidence remains in `CHANGELOG.md`, GitHub issues/PRs, and canonical CI history.
 
@@ -101,14 +117,16 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## NEXT
 
-1. Work only GitHub Issue #21 until its acceptance criteria are satisfied.
-2. Run canonical CI and all applicable Stage 4/5/7 regression/acceptance gates after the Knowledge Layer implementation.
-3. Update governing docs, Capability Registry, CHANGELOG, and this state file truthfully with acceptance evidence.
-4. Obtain explicit maturity/acceptance decision for the Knowledge Layer.
-5. Only then activate Issue #23 as the next implementation milestone.
-6. After Issue #23 acceptance, activate Issue #24.
-7. After Issue #24 establishes the private Generation 1 delivery surface, activate Issue #25 for read-only Gmail Intelligence.
-8. Re-enter deferred paid Stage 5 hardening only when Pilot RC1 or equivalent whole-OS value justifies the cost and receives explicit approval.
+1. With separate publication approval, stage and commit the Issue #21 prototype,
+   push `knowledge-layer-foundation`, and open a draft pull request.
+2. Run canonical CI, including all 109 tests and the Stage 4/5/7/Knowledge Layer
+   acceptance harnesses.
+3. Review canonical evidence and obtain explicit operator acceptance/maturity
+   decision; do not promote by assumption.
+4. After Issue #21 is accepted and merged, activate Issue #23 as the single next
+   implementation milestone.
+5. Preserve Issue #24 and Issue #25 dependency order and the deferred paid Stage
+   5 gates.
 
 ## Do not start yet
 

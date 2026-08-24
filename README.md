@@ -35,7 +35,14 @@ The governed Google Calendar read path for briefings is Tested. It performs a fr
 
 The Calendar Runtime Assembly is Tested. Its thin boundary performs a fresh read, renders current calendar context plus inline proposals and the reinforced approval queue, and delegates durable decisions and execution to the existing Tested workflow. Eight focused tests and **94 repository tests** pass. The combined synthetic acceptance verifies read-to-queue composition, all four decisions, verified execution, restart restoration, and zero live calendar mutations; canonical CI #31 passed. The current calendar implementation track is closed at Tested. This does not claim a full Briefing Engine or Stable maturity.
 
-The next authorized product milestone is the **Knowledge Layer Foundation**: an Executive Status Packet schema and validator, explicit user/domain data boundaries, and a small evidence/provenance contract shared by future Calendar, Gmail, briefing, RIE, and MCOM consumers. Gmail Intelligence and the full Briefing Engine remain subsequent vertical slices.
+The **Knowledge Layer Foundation** is now implemented locally at Prototype
+maturity. Its strict, versioned Executive Status Packet schema, validator,
+synthetic fixtures, evidence/provenance contract, and enforceable storage
+boundary pass 15 focused tests and a synthetic acceptance harness. Canonical CI
+and explicit operator review remain required before promotion. The ratified next
+milestone after that acceptance is the single-operator Railway security
+boundary; the private web application and read-only Gmail Intelligence follow
+in that order.
 
 Railway/R2 remains a single-operator durability deployment, not a multi-user product runtime. Paid snapshot and provider-retention hardening is deliberately deferred until Pilot RC1 or an equivalent whole-OS working prototype justifies the cost.
 
@@ -44,3 +51,7 @@ The Stage 4 storage tradeoffs, safety rules, and replacement boundary are docume
 The runtime configuration, backup cadence, restore procedure, fail-loud rules, and acceptance boundary are documented in [Pilot Runtime Durability Contract](docs/PILOT_RUNTIME_DURABILITY.md).
 
 The selected provider topology and operator acceptance checklist are documented in [Railway + Cloudflare R2 Pilot Deployment](docs/RAILWAY_R2_DEPLOYMENT.md).
+
+The canonical Knowledge Layer packet contract, compatibility rules, provenance
+model, and data-ownership boundary are documented in [Knowledge Layer
+Foundation](docs/KNOWLEDGE_LAYER_FOUNDATION.md).

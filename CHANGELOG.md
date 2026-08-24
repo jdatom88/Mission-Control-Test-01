@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-08-24 — Knowledge Layer Foundation prototype
+
+Implemented the first Generation 1 Knowledge Layer vertical slice governed by
+Issue #21. Added a strict JSON `1.0` Executive Status Packet using a thin
+Pydantic 2 validation boundary. The packet preserves domain/project identity,
+lifecycle, update time, focus, progress, risks, opportunities, tasks, pending
+decisions, next milestone, confidence, and linked provenance.
+
+Provenance records distinguish facts, assumptions, inferences, predictions, and
+recommendations while preserving source identity/reference, observation time,
+confidence, and rationale. Missing fields, invalid enumerations and types,
+naive timestamps, out-of-range confidence, unknown fields, unsupported versions,
+foreign domains, duplicate provenance, and broken references fail loudly with
+field-specific messages. Numeric strings are not silently coerced into
+confidence values.
+
+Documented and enforced the boundary among repository-owned product code and
+synthetic fixtures, externally stored operator knowledge, sealed/encrypted
+credentials, and separate runtime state. Added five synthetic fixtures and 15
+focused tests. The full repository suite passes **109 tests**; Stage 4, Stage 5,
+and Stage 7 acceptance remain green with zero live calendar mutations. The new
+Knowledge Layer harness reports `KNOWLEDGE_LAYER_ACCEPTANCE=PASS`, semantic
+round-trip and data-boundary verification, zero real operator data, and zero
+external actions.
+
+Executive Status Packet Schema / Validator is now **Prototype**, not Tested.
+Canonical CI, review, and explicit operator acceptance remain pending. No OAuth,
+web application, Gmail processing, autonomous action, paid infrastructure work,
+or real operator-data ingestion occurred.
+
 ## 2026-08-24 — Governance, handoff, and Stage 7 CI reconciliation
 
 Reconciled the canonical handoff after Calendar Runtime Assembly promotion. The
