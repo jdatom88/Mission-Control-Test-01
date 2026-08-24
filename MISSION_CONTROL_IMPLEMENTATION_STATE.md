@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Governed Google Calendar read path for briefings — Prototype implementation, canonical CI, and live connected-calendar data/empty-window acceptance complete; maturity review pending. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
+Calendar completion review — Governed Google Calendar Read for Briefings and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
 
 ## Current milestone
 
-Review the Issue #6 acceptance record and decide whether Governed Google Calendar Read for Briefings and the expanded Connector State Model may move from Prototype to Tested. Keep Email Intelligence out of scope until the calendar-closure review is complete.
+Inventory the remaining Calendar Service gaps, separate Tested-but-not-Stable hardening from unimplemented user-facing operations, and select the smallest governed closure milestone before beginning Email Intelligence.
 
 ## Implemented
 
@@ -109,17 +109,18 @@ Review the Issue #6 acceptance record and decide whether Governed Google Calenda
 - Fresh live primary-calendar retrieval for August 24, 2026 from 3:00–3:01 AM `America/Los_Angeles` returned zero events and no pagination token, confirming healthy-no-matching-data behavior
 - The current execution runtime successfully invoked the connected Google Calendar read capability; runtime-capability-unavailable and later-fresh-success replacement remain covered by focused regression tests
 - Live Stage 6 calendar mutations remained zero
+- User approved promotion of Governed Google Calendar Read for Briefings and the expanded Connector State Model from Prototype to Tested on the combined regression, canonical CI, live bounded-data, independent ID read-back, healthy-empty-window, and zero-mutation evidence
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
 
 - Calendar Service and ICS Export are Tested but not yet Stable
-- Connector state model
+- Connector State Model is Tested but not yet Stable; routine evidence across additional connectors remains pending
 - Direct Google Calendar Write is Tested but not yet Stable
 - Briefing Calendar Proposal Workflow is Tested but not yet Stable; persistent operational state and routine-use evidence remain pending
 - Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
 - Pilot Runtime SQLite Durability is Prototype; deployed health, R2 full read-back, fail-loud marker handling, zero-state restore, and non-empty semantic restore pass, but Railway volume-specific encryption evidence, Railway snapshot schedules, R2 retention controls, and routine-use evidence remain pending
-- Governed Google Calendar Read for Briefings is Prototype; bounded retrieval, canonical mapping, retry, fresh-state, empty-result, runtime-capability tests, canonical CI, live data retrieval, independent ID read-back, and live empty-window acceptance pass; explicit maturity approval remains pending
+- Governed Google Calendar Read for Briefings is Tested but not yet Stable; full briefing-engine consumption and routine-use evidence remain pending
 
 ## Blockers
 
@@ -138,10 +139,12 @@ Review the Issue #6 acceptance record and decide whether Governed Google Calenda
 
 ## NEXT
 
-1. Review the complete Issue #6 evidence in draft PR #16 and decide whether Governed Google Calendar Read for Briefings and the expanded Connector State Model may move from Prototype to Tested.
-2. If approved, publish the maturity update, require canonical CI again, merge PR #16, and close Issue #6 with the acceptance evidence.
-3. Conduct a calendar-closure review before beginning Email Intelligence. Retain raw Google timezone-field retrieval as a Stable-maturity hardening item and do not invent additional calendar scope without Mission Control Development approval.
-4. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
+1. Complete the calendar-closure inventory against the governing architecture and open GitHub issues.
+2. Separate remaining work into: required before calendar scope can close, Stable-maturity hardening, and intentionally deferred infrastructure.
+3. Return any missing constitutional decision or material scope choice to Mission Control Development rather than inventing it here.
+4. Select and authorize the smallest remaining calendar milestone before beginning Email Intelligence.
+5. Retain raw Google timezone-field retrieval as a Stable-maturity hardening item.
+6. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
 
 ## Do not start yet
 

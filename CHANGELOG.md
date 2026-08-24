@@ -37,6 +37,12 @@ so raw IANA timezone-field retrieval remains a Stable hardening item. Live
 calendar mutations remained **0**. Maturity remains **Prototype** pending the
 explicit promotion decision.
 
+The operator approved promotion after reviewing the complete evidence.
+Governed Google Calendar Read for Briefings and the expanded Connector State
+Model are promoted from **Prototype** to **Tested**. Neither is Stable: the read
+path still needs full briefing-engine consumption and routine-use evidence, and
+the shared state model needs routine evidence across additional connectors.
+
 ## 2026-08-23 — Deployed Railway/R2 durability acceptance
 
 Provisioned the Railway single-instance pilot and private Cloudflare R2 backup
