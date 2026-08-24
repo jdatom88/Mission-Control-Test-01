@@ -28,6 +28,20 @@ Prefer small scripts, simple files, replaceable components, and infrastructure t
 
 The deployed Railway/R2 durability boundary is a narrow single-operator exception recorded in [Development Charter Amendment 001](DEVELOPMENT_CHARTER_AMENDMENT_001.md). It authorizes one runtime writer and one operator-owned state boundary, not multi-user functionality, autonomous orchestration, or a general application platform.
 
+## Generation 1 product boundary
+
+Generation 1 is a single-operator Mission Control product delivered through a private, mobile-responsive web application.
+
+The private web application is the canonical Generation 1 delivery surface. A native or installable application may be developed later, but it must reuse the same backend contracts, security boundaries, Knowledge Layer, and connector boundaries rather than creating a parallel product architecture.
+
+Generation 1 does not authorize:
+
+- multi-user tenancy or shared user accounts
+- Gmail mutation
+- autonomous external actions outside existing approval rules
+- credentials or refresh tokens stored in GitHub
+- removal or weakening of existing approval requirements
+
 ## Four implementation layers
 
 1. **Knowledge Layer** — charters, packets, configuration, user/domain state.
@@ -115,11 +129,40 @@ not the independent recovery copy. This selection does not authorize multiple
 writers, a full briefing API, or maturity promotion without deployed read-back
 and clean-restore evidence.
 
+## Generation 1 security boundary
+
+After Knowledge Layer Foundation acceptance, the next authorized platform milestone is a single-operator Railway security boundary.
+
+That boundary must provide:
+
+- private operator authentication for the Mission Control web application
+- server-side Google OAuth rather than browser-held provider credentials
+- encrypted persistent storage for Google refresh tokens outside GitHub
+- explicit separation among application code, operator knowledge, credentials/secrets, and runtime/audit state
+- restart validation proving authorized credentials can be reloaded and used after process restart without re-authentication by accident or silent credential loss
+- read-back validation that proves the persisted credential belongs to the expected operator/provider context before it is trusted
+
+The security boundary is for one operator only. It is not a tenancy model and must not create generalized user-account infrastructure beyond what the private Generation 1 operator surface requires.
+
+## Generation 1 web application boundary
+
+After the single-operator security boundary is accepted, Mission Control may build the private mobile-responsive web application.
+
+The application must:
+
+- use the accepted Knowledge Layer contract rather than inventing a second data model
+- reuse the existing single-runtime persistence and connector architecture
+- present Mission Control outputs and governed actions through a mobile-first responsive interface
+- preserve existing approval requirements for external writes
+- access operator state through the Mission Control backend rather than exposing SQLite or provider tokens directly to clients
+
+A native or installable application remains a later delivery option using the same backend boundaries.
+
 ## Implementation sequencing
 
 Build vertical slices that prove value end to end before broadening the system.
 
-Vertical-slice sequence:
+Completed/closed sequence:
 
 1. Calendar Service vertical slice — Tested
 2. Connector state/health orchestration — Tested
@@ -133,8 +176,15 @@ Vertical-slice sequence:
 10. Calendar Runtime Assembly — Tested
 11. Current calendar implementation track — closed at Tested; Stable hardening remains explicit follow-on work
 12. Governance and canonical-state reconciliation — complete
-13. Knowledge Layer Foundation: Executive Status Packet schema, validator, data boundary, and evidence/provenance contract — next authorized milestone
-14. Read-only Gmail Intelligence vertical slice — only after Knowledge Layer acceptance
+
+Canonical Generation 1 implementation sequence:
+
+13. **Knowledge Layer Foundation** — complete and validate the Executive Status Packet schema, validator, data boundary, and evidence/provenance contract currently governed by GitHub Issue #21.
+14. **Single-Operator Railway Security Boundary** — private operator authentication, server-side Google OAuth, encrypted persistent refresh-token storage, restart validation, and credential read-back validation.
+15. **Private Mobile-Responsive Mission Control Web Application** — build the Generation 1 delivery surface using the accepted Knowledge Layer contract and existing single-runtime architecture.
+16. **Read-Only Gmail Intelligence Vertical Slice** — begin as a separately governed capability only after the preceding Generation 1 foundation and delivery-surface milestones are established.
+
+This ordering supersedes the earlier sequence that placed Gmail Intelligence immediately after Knowledge Layer acceptance.
 
 Paid Railway snapshots, provider retention controls, and other deferred Stage 5 hardening remain outside the critical path until Pilot RC1 or an equivalent whole-OS working prototype justifies the cost and receives explicit operator approval.
 
