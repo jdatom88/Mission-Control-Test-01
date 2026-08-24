@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-08-23 — Deployed Railway/R2 durability acceptance
+
+Provisioned the Railway single-instance pilot and private Cloudflare R2 backup
+target, completed the one-time marked-volume bootstrap, and returned Railway to
+the established guardian start command through canonical PR #14. The deployed
+health endpoint returned HTTP 200 with `storage: verified`.
+
+The original R2 access-key value was invalid. The bucket-scoped token was
+rotated and the replacement credentials were transferred directly into sealed
+Railway variables without repository or log exposure. The deployed runtime then
+created and fully read back two verified R2 objects:
+
+- `mission-control/calendar-state/deployed-bootstrap-acceptance-20260824T031957Z.sqlite3`
+  — SHA-256 `cb003d6e3c54e53e69f8601621ffda664008fda2e4a403b559a5066509f9cdab`;
+  zero-state semantic counts.
+- `mission-control/calendar-state/deployed-semantic-acceptance-20260824T032411Z.sqlite3`
+  — SHA-256 `a1cb8b3a46598fce7fdcf5d1fe68aa87d7cc4c50457d67703a7833a1c918faca`;
+  2 proposals, 5 decision/audit records, 1 verified receipt, and 1 active queue
+  item.
+
+Removing the deployed state marker caused the storage check to fail loudly with
+exit 2 while preserving the existing database. For each restore rehearsal, the
+guardian was stopped, the live database was moved to quarantine, the exact R2
+object was fetched into clean staging, and restore was accepted only into a
+clean destination. A separate process verified the non-empty proposal statuses,
+preserved context, exact audit sequence, verified receipt, and deferred queue
+membership. Calendar-provider mutations remained **0**. The pilot was returned
+to its original verified zero-state database and final health was HTTP 200.
+
+Pilot Runtime SQLite Durability remains **Prototype**. Railway's Free plan does
+not provide the required daily/weekly/monthly volume snapshots, the R2 bucket
+does not yet enforce the 100-day lock/lifecycle policy, and volume-specific
+encryption-at-rest applicability evidence still must be captured.
+
 ## 2026-08-20 — Railway/R2 deployment integration prototype
 
 Merged the host-neutral pilot durability controls from PR #10 into canonical
