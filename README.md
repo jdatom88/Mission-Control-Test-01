@@ -38,8 +38,9 @@ The Calendar Runtime Assembly is Tested. Its thin boundary performs a fresh read
 The **Knowledge Layer Foundation** is now implemented locally at Prototype
 maturity. Its strict, versioned Executive Status Packet schema, validator,
 synthetic fixtures, evidence/provenance contract, and enforceable storage
-boundary pass 15 focused tests and a synthetic acceptance harness. Canonical CI
-and explicit operator review remain required before promotion. The ratified next
+boundary pass 15 focused tests, the 109-test repository suite, all Stage 4/5/7
+acceptance gates, and canonical CI run #41. Explicit operator review remains
+required before promotion. The ratified next
 milestone after that acceptance is the single-operator Railway security
 boundary; the private web application and read-only Gmail Intelligence follow
 in that order.

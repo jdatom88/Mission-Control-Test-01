@@ -20,9 +20,9 @@ The private mobile-responsive Mission Control web application is the ratified Ge
 
 The Executive Status Packet schema, validator, operator/domain data boundary,
 evidence/provenance contract, synthetic fixtures, tests, and acceptance harness
-are implemented locally at **Prototype** maturity. Local validation is complete;
-publication, canonical CI, and explicit operator acceptance remain before Issue
-#23 may begin.
+are published in draft PR #26 at **Prototype** maturity. Local validation and
+canonical CI run #41 pass; explicit operator acceptance, maturity review, and
+merge remain before Issue #23 may begin.
 
 ## Ratified Generation 1 implementation sequence
 
@@ -80,7 +80,8 @@ The following capabilities already exist and remain available to Generation 1:
 - Real operator data used: 0.
 - External actions performed by the Knowledge Layer acceptance: 0.
 - Dependency check passes in an isolated Python 3.12 environment.
-- Canonical GitHub CI has not run on this implementation yet.
+- Draft PR #26 is open at remote commit `a96cf507f48cf2d19403629ec58c5e8ae4376529`.
+- Canonical GitHub Actions run #41 passed dependency checks, all tests, and every Stage 4/5/7/Knowledge Layer acceptance step.
 
 Detailed historical implementation and acceptance evidence remains in `CHANGELOG.md`, GitHub issues/PRs, and canonical CI history.
 
@@ -117,15 +118,13 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## NEXT
 
-1. With separate publication approval, stage and commit the Issue #21 prototype,
-   push `knowledge-layer-foundation`, and open a draft pull request.
-2. Run canonical CI, including all 109 tests and the Stage 4/5/7/Knowledge Layer
-   acceptance harnesses.
-3. Review canonical evidence and obtain explicit operator acceptance/maturity
-   decision; do not promote by assumption.
-4. After Issue #21 is accepted and merged, activate Issue #23 as the single next
+1. Review the complete Issue #21 and draft PR #26 evidence and obtain an explicit
+   operator acceptance/maturity decision; do not promote by assumption.
+2. If approved, publish the maturity update, mark PR #26 ready, rerun canonical
+   CI, merge it, and close Issue #21 with the final evidence.
+3. After Issue #21 is accepted and merged, activate Issue #23 as the single next
    implementation milestone.
-5. Preserve Issue #24 and Issue #25 dependency order and the deferred paid Stage
+4. Preserve Issue #24 and Issue #25 dependency order and the deferred paid Stage
    5 gates.
 
 ## Do not start yet
