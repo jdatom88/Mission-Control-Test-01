@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Calendar implementation track closed at Tested — Calendar Runtime Assembly, Governed Google Calendar Read for Briefings, and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
+Calendar implementation track closed at Tested. Governance and handoff maintenance is complete, and the next authorized product milestone is the Knowledge Layer Foundation. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
 
 ## Current milestone
 
-Publish the approved Calendar Runtime Assembly maturity update, merge PR #19, close Issue #18 with acceptance evidence, and return to Mission Control Development for explicit authorization of the next domain milestone. Email Intelligence is not started by this promotion.
+Design and validate the first shared Knowledge Layer vertical slice: an Executive Status Packet schema, validator, user/domain data boundary, and evidence/provenance contract. Email Intelligence must not begin until this foundation has an accepted schema and regression gate.
 
 ## Implemented
 
@@ -118,6 +118,9 @@ Publish the approved Calendar Runtime Assembly maturity update, merge PR #19, cl
 - Canonical GitHub Actions run #31 passed on the Calendar Runtime Assembly implementation head
 - User approved Calendar Runtime Assembly promotion from Prototype to Tested on the combined focused tests, 94-test regression suite, Stage 4/5/7 acceptance, canonical CI, durable restart, truthful fallback, and zero-live-mutation evidence
 - The current calendar implementation track is closed at Tested; this does not claim Stable maturity or a full Briefing Engine
+- Development Charter Amendment 001 narrows the Railway/R2 deployment to one operator, one runtime writer, and one operator-owned state boundary; it does not authorize multi-user functionality
+- Paid Railway snapshot and remaining provider-control work is deferred until Pilot RC1 or an equivalent whole-OS working prototype justifies the spend
+- Direct Stage 7 acceptance invocation is portable from the repository root, and canonical CI runs the Stage 7 harness alongside Stage 4 and Stage 5
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -145,17 +148,22 @@ Publish the approved Calendar Runtime Assembly maturity update, merge PR #19, cl
 - The R2 bucket has no 100-day Bucket Lock rule or matching post-retention lifecycle expiration rule; provider retention acceptance remains pending
 - The remaining paid Stage 5 provider-control gates are intentionally deferred; this is not a Tested or Stable maturity claim
 - No full briefing runtime or user-facing approval interface exists yet
+- No authenticated user-account or multi-tenant model exists. The deployed guardian owns one operator's state and exposes no Mission Control product API.
 
 ## NEXT
 
-1. Merge PR #19 and close Issue #18 with the complete acceptance evidence.
-2. Return to Mission Control Development to authorize and scope the next domain milestone; do not begin Email Intelligence merely by implication.
-3. Retain raw Google timezone-field retrieval and the other named operational extensions as Stable-maturity hardening rather than implying Stable completion.
-4. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
+1. Define the Executive Status Packet schema from the minimum fields in the Development Charter, including explicit versioning and required/optional fields.
+2. Define and test the boundary among repository-owned code/configuration, operator-owned knowledge packets, externally managed credentials, and runtime-generated state.
+3. Implement a validator with clear failure messages and fixtures for valid, incomplete, malformed, incompatible-version, and foreign-domain packets.
+4. Define the smallest evidence/provenance structure required for later briefing recommendations: source identity, observation time, fact/assumption distinction, confidence, and rationale.
+5. Validate the Knowledge Layer vertical slice in canonical CI and promote it only on explicit acceptance evidence.
+6. After the Knowledge Layer is accepted, begin a separately scoped read-only Gmail Intelligence vertical slice; do not start the full Briefing Engine first.
+7. Re-enter Stage 5 paid provider-control work only when Pilot RC1 or an equivalent whole-OS prototype is ready and the operator explicitly approves the spend. Keep Issue #9 and Prototype maturity truthful until then.
 
 ## Do not start yet
 
 - Do not implement the full Executive Brief, Intelligence Brief, Flash Brief, RIE, MCOM, Career Lab, or Gmail workflows in code yet.
+- Do not implement multi-user tenancy, user accounts, or autonomous orchestration under the single-operator Railway/R2 exception.
 - Do not create parallel repositories.
 - Do not redesign established architecture unless implementation exposes a concrete conflict.
 - Surface architecture conflicts back to Mission Control Development rather than inventing new governing rules during implementation.

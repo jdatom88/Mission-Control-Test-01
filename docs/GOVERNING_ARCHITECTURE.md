@@ -26,6 +26,8 @@ Before building a capability, search for a mature, lightweight, maintained libra
 ### Solo-Operator Constraint
 Prefer small scripts, simple files, replaceable components, and infrastructure that a single part-time maintainer can understand and recover after time away.
 
+The deployed Railway/R2 durability boundary is a narrow single-operator exception recorded in [Development Charter Amendment 001](DEVELOPMENT_CHARTER_AMENDMENT_001.md). It authorizes one runtime writer and one operator-owned state boundary, not multi-user functionality, autonomous orchestration, or a general application platform.
+
 ## Four implementation layers
 
 1. **Knowledge Layer** — charters, packets, configuration, user/domain state.
@@ -130,6 +132,11 @@ Vertical-slice sequence:
 9. Calendar-closure review before Email Intelligence or other domain expansion — complete; narrow assembly milestone approved
 10. Calendar Runtime Assembly — Tested
 11. Current calendar implementation track — closed at Tested; Stable hardening remains explicit follow-on work
+12. Governance and canonical-state reconciliation — complete
+13. Knowledge Layer Foundation: Executive Status Packet schema, validator, data boundary, and evidence/provenance contract — next authorized milestone
+14. Read-only Gmail Intelligence vertical slice — only after Knowledge Layer acceptance
+
+Paid Railway snapshots, provider retention controls, and other deferred Stage 5 hardening remain outside the critical path until Pilot RC1 or an equivalent whole-OS working prototype justifies the cost and receives explicit operator approval.
 
 ## Architecture conflict rule
 
