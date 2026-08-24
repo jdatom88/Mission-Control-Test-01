@@ -52,6 +52,8 @@ Mission Control must distinguish at least:
 - connected + insufficient scope
 - connected + wrong account
 - authentication expired
+- runtime capability unavailable while the connector may remain healthy
+- provider rate limited
 - connector unavailable
 - execution failure
 - unknown
@@ -81,6 +83,13 @@ Mission Control event → validate → ICS adapter → `icalendar` → parse-bac
 The phrase “Download ICS” must never be displayed unless a real verified artifact exists.
 
 Emailing a verified ICS artifact is an authorized fallback delivery path, not proof of calendar creation. Delivery, client import, and direct provider creation are separate outcomes and must be reported separately.
+
+Every briefing calendar read must use a fresh explicit time window through the
+provider-neutral read boundary. A healthy empty result is not a connector
+failure. A runtime that cannot invoke the calendar capability must report the
+runtime limitation without labeling Google Calendar unavailable. Read-only
+transient failures may retry no more than three times, and a later fresh live
+success supersedes stale historical failure state.
 
 The binding service boundaries, approval semantics, briefing placement rules, execution paths, and progressive-automation constraints are specified in [Calendar Service Architecture](CALENDAR_SERVICE_ARCHITECTURE.md).
 
@@ -116,8 +125,9 @@ Vertical-slice sequence:
 4. One briefing path that consumes shared capabilities — Stage 3 Tested
 5. Persistent proposal, approval, and audit state — Stage 4 Tested
 6. Pilot runtime storage controls and synthetic backup/restore validation — feature-branch acceptance complete
-7. Actual cloud runtime, encrypted-volume, scheduler, and clean-restore acceptance — NEXT
-8. Additional connectors and domain packets only after the governed path is operationally durable
+7. Actual cloud runtime and independent clean-restore acceptance — core deployed acceptance complete; paid snapshot/retention evidence remains deferred at Prototype
+8. Governed Google Calendar read path for briefings — Prototype implementation complete; live acceptance NEXT
+9. Calendar-closure review before Email Intelligence or other domain expansion
 
 ## Architecture conflict rule
 

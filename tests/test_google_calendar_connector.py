@@ -36,11 +36,13 @@ class FakeCalendarList:
 
 
 class FakeEvents:
-    def __init__(self, insert_request, get_request):
+    def __init__(self, insert_request, get_request, list_request=None):
         self.insert_request = insert_request
         self.get_request = get_request
+        self.list_request = list_request or FakeRequest({"items": []})
         self.insert_kwargs = None
         self.get_kwargs = None
+        self.list_kwargs = None
 
     def insert(self, **kwargs):
         self.insert_kwargs = kwargs
@@ -50,11 +52,15 @@ class FakeEvents:
         self.get_kwargs = kwargs
         return self.get_request
 
+    def list(self, **kwargs):
+        self.list_kwargs = kwargs
+        return self.list_request
+
 
 class FakeService:
-    def __init__(self, calendar_request, insert_request, get_request):
+    def __init__(self, calendar_request, insert_request, get_request, list_request=None):
         self.calendar_list = FakeCalendarList(calendar_request)
-        self.events_resource = FakeEvents(insert_request, get_request)
+        self.events_resource = FakeEvents(insert_request, get_request, list_request)
 
     def calendarList(self):
         return self.calendar_list
@@ -134,7 +140,7 @@ def test_google_adapter_rejects_read_only_calendar():
         (401, ConnectorState.AUTH_EXPIRED),
         (403, ConnectorState.INSUFFICIENT_SCOPE),
         (404, ConnectorState.WRONG_ACCOUNT),
-        (429, ConnectorState.CONNECTOR_UNAVAILABLE),
+        (429, ConnectorState.RATE_LIMITED),
         (503, ConnectorState.CONNECTOR_UNAVAILABLE),
     ],
 )
@@ -185,3 +191,97 @@ def test_arbitrary_operation_id_is_converted_to_stable_google_event_id():
     assert first_id == second_id
     assert first_id.startswith("mc")
     assert len(first_id) == 32
+
+
+def test_google_adapter_lists_bounded_timed_and_all_day_events():
+    all_day = {
+        "id": "all-day-1",
+        "summary": "Company holiday",
+        "start": {"date": "2026-08-24"},
+        "end": {"date": "2026-08-25"},
+    }
+    service = FakeService(
+        FakeRequest({"accessRole": "owner"}),
+        FakeRequest(_google_resource()),
+        FakeRequest(_google_resource()),
+        FakeRequest({"items": [_google_resource(), all_day]}),
+    )
+    connector = GoogleCalendarConnector(service)
+    timezone = ZoneInfo("America/Los_Angeles")
+
+    events = connector.list_events(
+        "primary",
+        datetime(2026, 8, 24, 0, 0, tzinfo=timezone),
+        datetime(2026, 8, 25, 0, 0, tzinfo=timezone),
+        max_results=25,
+        timezone_name="America/Los_Angeles",
+    )
+
+    assert service.events_resource.list_kwargs == {
+        "calendarId": "primary",
+        "timeMin": "2026-08-24T07:00:00Z",
+        "timeMax": "2026-08-25T07:00:00Z",
+        "singleEvents": True,
+        "orderBy": "startTime",
+        "showDeleted": False,
+        "maxResults": 25,
+        "timeZone": "America/Los_Angeles",
+    }
+    assert len(events) == 2
+    assert events[0].all_day is False
+    assert events[0].timezone_name == "America/Los_Angeles"
+    assert events[1].all_day is True
+    assert events[1].start.isoformat() == "2026-08-24"
+    assert events[1].end.isoformat() == "2026-08-25"
+
+
+@pytest.mark.parametrize(
+    ("status", "expected_state"),
+    [
+        (401, ConnectorState.AUTH_EXPIRED),
+        (403, ConnectorState.INSUFFICIENT_SCOPE),
+        (404, ConnectorState.WRONG_ACCOUNT),
+        (429, ConnectorState.RATE_LIMITED),
+        (503, ConnectorState.CONNECTOR_UNAVAILABLE),
+    ],
+)
+def test_google_adapter_classifies_list_failures(status, expected_state):
+    service = FakeService(
+        FakeRequest({"accessRole": "owner"}),
+        FakeRequest(_google_resource()),
+        FakeRequest(_google_resource()),
+        FakeRequest(error=FakeHttpError(status)),
+    )
+    timezone = ZoneInfo("UTC")
+
+    with pytest.raises(ConnectorOperationError) as captured:
+        GoogleCalendarConnector(service).list_events(
+            "primary",
+            datetime(2026, 8, 24, tzinfo=timezone),
+            datetime(2026, 8, 25, tzinfo=timezone),
+            max_results=100,
+            timezone_name=None,
+        )
+
+    assert captured.value.state is expected_state
+
+
+def test_google_adapter_rejects_malformed_list_response():
+    service = FakeService(
+        FakeRequest({"accessRole": "owner"}),
+        FakeRequest(_google_resource()),
+        FakeRequest(_google_resource()),
+        FakeRequest({"items": {"not": "a list"}}),
+    )
+    timezone = ZoneInfo("UTC")
+
+    with pytest.raises(ConnectorOperationError) as captured:
+        GoogleCalendarConnector(service).list_events(
+            "primary",
+            datetime(2026, 8, 24, tzinfo=timezone),
+            datetime(2026, 8, 25, tzinfo=timezone),
+            max_results=100,
+            timezone_name=None,
+        )
+
+    assert captured.value.state is ConnectorState.EXECUTION_FAILURE

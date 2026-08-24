@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-08-24 — Governed Google Calendar read prototype
+
+Accepted the operator's cost-based Stage 5 disposition: Pilot Runtime SQLite
+Durability remains **Prototype**, and the paid Railway snapshot plus remaining
+provider-control gates are deferred rather than misreported as complete. The
+calendar track continues before Email Intelligence work begins.
+
+Implemented the Issue #6 bounded calendar-read slice. Added a provider-neutral
+timed/all-day read model, an explicit RFC3339 window contract, and a thin Google
+Calendar `events.list` adapter with single-event expansion, start-time ordering,
+deleted-event exclusion, a bounded result cap, and optional IANA response
+timezone. Added distinct handling for 401, 403, 404, 429, 5xx, malformed
+responses, healthy data, and healthy empty windows.
+
+Read-only transient failures retry no more than three times. Authorization,
+scope, account, malformed-response, and runtime-capability failures do not
+retry. Each briefing invocation receives a fresh timestamped result, so a live
+success replaces stale historical failure state. An execution runtime that
+cannot invoke Calendar reports that limitation without claiming the Google
+Calendar connector is unavailable.
+
+Added **21 Stage 6 tests**. The focused calendar read, connector, and briefing
+suite passes **30 tests**, and the complete repository suite passes **86 tests**.
+The capability remains **Prototype** until canonical CI and live connected
+Google Calendar data/empty-window acceptance pass.
+
 ## 2026-08-23 — Deployed Railway/R2 durability acceptance
 
 Provisioned the Railway single-instance pilot and private Cloudflare R2 backup
