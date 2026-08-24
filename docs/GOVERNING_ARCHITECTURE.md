@@ -199,8 +199,8 @@ Completed/closed sequence:
 
 Canonical Generation 1 implementation sequence:
 
-13. **Knowledge Layer Foundation** — complete and validate the Executive Status Packet schema, validator, data boundary, and evidence/provenance contract currently governed by GitHub Issue #21.
-14. **Single-Operator Railway Security Boundary** — private operator authentication, server-side Google OAuth, encrypted persistent refresh-token storage, restart validation, and credential read-back validation.
+13. **Knowledge Layer Foundation** — Tested; the Executive Status Packet schema, validator, data boundary, and evidence/provenance contract passed Issue #21 acceptance.
+14. **Single-Operator Railway Security Boundary** — current activated milestone; on explicit implementation instruction, implement private operator authentication, server-side Google OAuth, encrypted persistent refresh-token storage, restart validation, and credential read-back validation.
 15. **Private Mobile-Responsive Mission Control Web Application** — build the Generation 1 delivery surface using the accepted Knowledge Layer contract and existing single-runtime architecture.
 16. **Read-Only Gmail Intelligence Vertical Slice** — begin as a separately governed capability only after the preceding Generation 1 foundation and delivery-surface milestones are established.
 

@@ -28,9 +28,17 @@ external actions.
 Executive Status Packet Schema / Validator is now **Prototype**, not Tested.
 Draft PR #26 is published, and canonical GitHub Actions run #41 passed dependency
 checks, all 109 tests, and every Stage 4/5/7/Knowledge Layer acceptance step.
-Explicit operator review and promotion remain pending. No OAuth, web application,
-Gmail processing, autonomous action, paid infrastructure work, or real
-operator-data ingestion occurred.
+At initial draft publication, explicit operator review and promotion remained
+pending. No OAuth, web application, Gmail processing, autonomous action, paid
+infrastructure work, or real operator-data ingestion occurred.
+
+The operator reviewed the complete local and canonical evidence and explicitly
+approved promotion on August 24, 2026. Canonical run #42 also passed on the final
+evidence head. Executive Status Packet Schema / Validator is promoted from
+**Prototype** to **Tested**. This is not Stable maturity: routine use across
+multiple Mission Control domains remains future evidence. Issue #23 becomes the
+single active Generation 1 milestone after the PR #26 merge gate; this promotion
+does not itself begin authentication, OAuth, or token-persistence implementation.
 
 ## 2026-08-24 — Governance, handoff, and Stage 7 CI reconciliation
 

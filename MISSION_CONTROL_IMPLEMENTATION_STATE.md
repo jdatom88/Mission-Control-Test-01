@@ -16,17 +16,16 @@ The private mobile-responsive Mission Control web application is the ratified Ge
 
 ## Current milestone
 
-**Generation 1 Milestone 1 — Knowledge Layer Foundation, governed by GitHub Issue #21.**
+**Generation 1 Milestone 2 — Single-Operator Railway Security Boundary, governed by GitHub Issue #23.**
 
-The Executive Status Packet schema, validator, operator/domain data boundary,
-evidence/provenance contract, synthetic fixtures, tests, and acceptance harness
-are published in draft PR #26 at **Prototype** maturity. Local validation and
-canonical CI run #41 pass; explicit operator acceptance, maturity review, and
-merge remain before Issue #23 may begin.
+Generation 1 Milestone 1 is accepted at **Tested** maturity on local and
+canonical validation plus explicit operator approval. Issue #23 is activated as
+the next milestone, but its private-authentication, OAuth, and token-persistence
+implementation has not begun in this promotion update.
 
 ## Ratified Generation 1 implementation sequence
 
-1. **Knowledge Layer Foundation — Issue #21**
+1. **Knowledge Layer Foundation — Issue #21 — Tested**
    - Versioned Executive Status Packet schema
    - Validator and synthetic fixtures
    - Explicit product-code / operator-knowledge / credentials / runtime-state boundaries
@@ -69,9 +68,9 @@ The following capabilities already exist and remain available to Generation 1:
 - Governed Google Calendar Read for Briefings — Tested
 - Calendar Runtime Assembly — Tested
 - Single-runtime SQLite durability and Railway/R2 deployment boundary — Prototype with deployed health, backup/read-back, fail-loud storage, and clean-restore evidence
-- Executive Status Packet Schema / Validator — Prototype with strict JSON v1.0 validation, semantic round-trip, provenance-reference integrity, synthetic fixtures, and enforced external data-root boundaries
+- Executive Status Packet Schema / Validator — Tested with strict JSON v1.0 validation, semantic round-trip, provenance-reference integrity, synthetic fixtures, and enforced external data-root boundaries
 
-## Current Knowledge Layer validation evidence
+## Knowledge Layer acceptance evidence
 
 - 15 focused Knowledge Layer tests pass.
 - The complete repository suite passes 109 tests.
@@ -80,8 +79,10 @@ The following capabilities already exist and remain available to Generation 1:
 - Real operator data used: 0.
 - External actions performed by the Knowledge Layer acceptance: 0.
 - Dependency check passes in an isolated Python 3.12 environment.
-- Draft PR #26 is open at remote commit `a96cf507f48cf2d19403629ec58c5e8ae4376529`.
+- Draft PR #26 final evidence head is `994d3d441ecd26c9647d75db6be58c280bcc0a7a`.
 - Canonical GitHub Actions run #41 passed dependency checks, all tests, and every Stage 4/5/7/Knowledge Layer acceptance step.
+- Canonical GitHub Actions run #42 passed on the final evidence head.
+- The operator explicitly approved promotion from Prototype to Tested and merge on August 24, 2026.
 
 Detailed historical implementation and acceptance evidence remains in `CHANGELOG.md`, GitHub issues/PRs, and canonical CI history.
 
@@ -110,28 +111,28 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## Current blockers / dependencies
 
-- Issue #21 must be accepted before Issue #23 implementation begins.
-- Issue #23 must establish the private operator and Google OAuth/token-security boundary before Issue #24 becomes an operational private web surface.
+- Issue #21 acceptance is complete; it no longer blocks Issue #23.
+- Issue #23 is activated but implementation has not begun. It must establish the private operator and Google OAuth/token-security boundary before Issue #24 becomes an operational private web surface.
 - Issue #24 must establish the Generation 1 delivery surface before Issue #25 Gmail Intelligence begins.
 - OAuth credentials remain externally managed until the server-side encrypted token boundary is deliberately implemented; no credential material belongs in GitHub.
 - Paid Railway snapshots and provider-retention hardening remain intentionally deferred and are not prerequisites for the four ratified Generation 1 milestones unless new evidence makes them necessary.
 
 ## NEXT
 
-1. Review the complete Issue #21 and draft PR #26 evidence and obtain an explicit
-   operator acceptance/maturity decision; do not promote by assumption.
-2. If approved, publish the maturity update, mark PR #26 ready, rerun canonical
-   CI, merge it, and close Issue #21 with the final evidence.
-3. After Issue #21 is accepted and merged, activate Issue #23 as the single next
-   implementation milestone.
-4. Preserve Issue #24 and Issue #25 dependency order and the deferred paid Stage
-   5 gates.
+1. Close the Issue #21/PR #26 merge gate with the complete acceptance evidence.
+2. Treat Issue #23 as the single active Generation 1 milestone.
+3. In the next implementation session, perform the canonical preflight and read
+   Issue #23 before designing or writing security-boundary code.
+4. Do not begin Issue #24 or Issue #25 until their preceding dependency is
+   accepted.
+5. Preserve the deferred paid Stage 5 gates.
 
 ## Do not start yet
 
 Until the dependency sequence permits it, do not implement:
 
-- Issue #23 security-boundary code before Issue #21 acceptance
+- Issue #23 security-boundary code merely by activating the issue; begin only on
+  an explicit implementation instruction
 - Issue #24 web application before the security boundary is accepted
 - Issue #25 Gmail Intelligence before the private web surface is established
 - Gmail mutation
