@@ -23,10 +23,10 @@ acceptance at Tested maturity:
 - deployed Railway/R2 durability mechanics through the explicitly accepted
   Prototype boundary.
 
-## Required before the calendar implementation track closes
+## Calendar closure acceptance — completed
 
-One narrow **Calendar Runtime Assembly acceptance** remains. It should prove in
-one invocation that the existing Tested boundaries work together:
+The narrow **Calendar Runtime Assembly acceptance** proved in one invocation
+that the existing Tested boundaries work together:
 
 1. accept an explicit briefing calendar window and destination;
 2. perform a fresh governed calendar read;
@@ -38,7 +38,7 @@ one invocation that the existing Tested boundaries work together:
    fallback; and
 8. restore the queue, audit history, and receipt after a process restart.
 
-This must remain a thin assembly seam or acceptance harness. It does not
+The implementation remains a thin assembly seam and acceptance harness. It does not
 authorize implementation of the full Executive Brief, Intelligence Brief,
 Flash Brief, or a general user-interface framework. Live mutation acceptance
 requires a separately displayed event proposal and explicit approval.
@@ -81,7 +81,14 @@ Development decision.
 
 ## Recommended NEXT milestone
 
-Specify and implement the smallest Calendar Runtime Assembly boundary and its
-combined acceptance harness. Reuse the existing Calendar Service, briefing
-retrieval, proposal workflow, SQLite store, direct Google connector, and ICS
-fallback without duplicating their policy or provider logic.
+The smallest Calendar Runtime Assembly boundary and its combined synthetic
+acceptance harness are Tested. The implementation
+reuses the existing Calendar Service, briefing retrieval, proposal workflow,
+SQLite store, direct connector contract, and ICS fallback without duplicating
+their policy or provider logic.
+
+Canonical CI #31 and the complete promotion review passed. Mission Control
+Development approved Tested promotion. The current calendar implementation
+track is closed at Tested after PR #19 merges and Issue #18 records the evidence.
+The next domain milestone requires separate Mission Control Development
+authorization; Email Intelligence is not started by this closure record.

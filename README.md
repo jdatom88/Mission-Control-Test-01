@@ -33,6 +33,8 @@ Railway health, private R2 upload/read-back, fail-loud storage behavior, and cle
 
 The governed Google Calendar read path for briefings is Tested. It performs a fresh bounded retrieval, maps timed and all-day events, distinguishes healthy empty data from failures, separates runtime-capability limitations from provider outages, and bounds transient retries. Twenty-one new tests pass, with **86 tests** green repository-wide and canonical CI #23/#24/#25 successful. Live bounded data retrieval, independent ID read-back, and an explicit healthy empty-window read passed with zero mutations. Full briefing-engine consumption and routine-use evidence remain prerequisites for Stable.
 
+The Calendar Runtime Assembly is Tested. Its thin boundary performs a fresh read, renders current calendar context plus inline proposals and the reinforced approval queue, and delegates durable decisions and execution to the existing Tested workflow. Eight focused tests and **94 repository tests** pass. The combined synthetic acceptance verifies read-to-queue composition, all four decisions, verified execution, restart restoration, and zero live calendar mutations; canonical CI #31 passed. The current calendar implementation track is closed at Tested. This does not claim a full Briefing Engine or Stable maturity.
+
 The Stage 4 storage tradeoffs, safety rules, and replacement boundary are documented in [Stage 4 Persistence Decision](docs/STAGE4_PERSISTENCE_DECISION.md).
 
 The runtime configuration, backup cadence, restore procedure, fail-loud rules, and acceptance boundary are documented in [Pilot Runtime Durability Contract](docs/PILOT_RUNTIME_DURABILITY.md).
