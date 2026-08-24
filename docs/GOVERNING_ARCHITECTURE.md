@@ -128,7 +128,8 @@ Vertical-slice sequence:
 7. Actual cloud runtime and independent clean-restore acceptance — core deployed acceptance complete; paid snapshot/retention evidence remains deferred at Prototype
 8. Governed Google Calendar read path for briefings — Tested
 9. Calendar-closure review before Email Intelligence or other domain expansion — complete; narrow assembly milestone approved
-10. Calendar Runtime Assembly — Prototype implementation and synthetic acceptance complete; canonical CI and promotion review NEXT
+10. Calendar Runtime Assembly — Tested
+11. Current calendar implementation track — closed at Tested; Stable hardening remains explicit follow-on work
 
 ## Architecture conflict rule
 

@@ -28,6 +28,14 @@ Calendar Runtime Assembly remains **Prototype** pending canonical CI and review.
 No live calendar mutation, Email Intelligence work, full Briefing Engine work,
 Stable promotion, or deferred Stage 5 provider-control work occurred.
 
+Canonical GitHub Actions run #31 passed on the implementation head. The operator
+approved promotion after reviewing the 8 focused tests, 94-test repository
+suite, Stage 4/5/7 acceptance harnesses, durable restart evidence, truthful
+fallback behavior, and zero live mutations. Calendar Runtime Assembly is
+promoted from **Prototype** to **Tested**, and the current calendar implementation
+track is closed at Tested. This is not Stable maturity, a full Briefing Engine,
+or authorization to begin Email Intelligence.
+
 ## 2026-08-24 — Governed Google Calendar read prototype
 
 Accepted the operator's cost-based Stage 5 disposition: Pilot Runtime SQLite

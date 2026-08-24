@@ -8,11 +8,11 @@ GitHub is the authoritative source for implemented state.
 
 ## Current stage
 
-Final calendar closure implementation — Calendar Runtime Assembly is implemented at Prototype maturity. Governed Google Calendar Read for Briefings and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
+Calendar implementation track closed at Tested — Calendar Runtime Assembly, Governed Google Calendar Read for Briefings, and the expanded Connector State Model are Tested. Pilot Runtime SQLite Durability remains Prototype by deliberate cost-based deferral.
 
 ## Current milestone
 
-Publish and validate the Calendar Runtime Assembly prototype through canonical CI, then review its evidence for Tested promotion and calendar-track closure before beginning Email Intelligence.
+Publish the approved Calendar Runtime Assembly maturity update, merge PR #19, close Issue #18 with acceptance evidence, and return to Mission Control Development for explicit authorization of the next domain milestone. Email Intelligence is not started by this promotion.
 
 ## Implemented
 
@@ -114,7 +114,10 @@ Publish and validate the Calendar Runtime Assembly prototype through canonical C
 - Eight focused Calendar Runtime Assembly tests covering healthy data, healthy empty data, runtime-capability limits, timed and all-day rendering, Approve/Edit/Reject/Defer, ICS fallback, and restart restoration
 - Combined Stage 7 synthetic acceptance passed read-to-queue composition, durable defer/edit/approve transitions, verified synthetic execution, final receipt restoration, and zero live calendar mutations
 - Full repository suite passes 94 tests; Stage 4 and Stage 5 separate-process acceptance harnesses remain green with zero live calendar mutations
-- Calendar Runtime Assembly is Prototype pending canonical CI and review; it is not the full Briefing Engine and does not authorize Email Intelligence
+- Calendar Runtime Assembly promoted from Prototype to Tested; it is not the full Briefing Engine and does not authorize Email Intelligence
+- Canonical GitHub Actions run #31 passed on the Calendar Runtime Assembly implementation head
+- User approved Calendar Runtime Assembly promotion from Prototype to Tested on the combined focused tests, 94-test regression suite, Stage 4/5/7 acceptance, canonical CI, durable restart, truthful fallback, and zero-live-mutation evidence
+- The current calendar implementation track is closed at Tested; this does not claim Stable maturity or a full Briefing Engine
 - Repository README and dependency manifests
 
 ## Experimental / not yet promoted to Stable
@@ -126,7 +129,7 @@ Publish and validate the Calendar Runtime Assembly prototype through canonical C
 - Briefing Calendar Persistent State is Tested but not yet Stable; runtime deployment durability, backup/restore, and routine-use evidence remain pending
 - Pilot Runtime SQLite Durability is Prototype; deployed health, R2 full read-back, fail-loud marker handling, zero-state restore, and non-empty semantic restore pass, but Railway volume-specific encryption evidence, Railway snapshot schedules, R2 retention controls, and routine-use evidence remain pending
 - Governed Google Calendar Read for Briefings is Tested but not yet Stable; full briefing-engine consumption and routine-use evidence remain pending
-- Calendar Runtime Assembly is Prototype; combined synthetic acceptance passes, while canonical CI and promotion review remain pending
+- Calendar Runtime Assembly is Tested but not Stable; routine-use evidence and the named Stable hardening items remain pending
 
 ## Blockers
 
@@ -145,11 +148,10 @@ Publish and validate the Calendar Runtime Assembly prototype through canonical C
 
 ## NEXT
 
-1. Publish the Calendar Runtime Assembly prototype on a feature branch and run canonical CI.
-2. Review the combined regression, synthetic acceptance, Stage 4/5 regression, CI, and zero-live-mutation evidence for Tested promotion.
-3. If accepted, promote Calendar Runtime Assembly to Tested, close Issue #18 with evidence, and declare the current calendar implementation track closed at Tested.
-4. Retain raw Google timezone-field retrieval and the other named operational extensions as Stable-maturity hardening rather than implying Stable completion.
-5. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
+1. Merge PR #19 and close Issue #18 with the complete acceptance evidence.
+2. Return to Mission Control Development to authorize and scope the next domain milestone; do not begin Email Intelligence merely by implication.
+3. Retain raw Google timezone-field retrieval and the other named operational extensions as Stable-maturity hardening rather than implying Stable completion.
+4. Re-enter Stage 5 only when the Railway subscription/provider-control cost is approved or a validated alternative removes the gate; keep Issue #9 and the Prototype maturity truthful in the meantime.
 
 ## Do not start yet
 
