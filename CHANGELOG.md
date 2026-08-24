@@ -26,6 +26,17 @@ suite passes **30 tests**, and the complete repository suite passes **86 tests**
 The capability remains **Prototype** until canonical CI and live connected
 Google Calendar data/empty-window acceptance pass.
 
+Draft PR #16 was published and canonical GitHub Actions run #23 passed. A fresh
+read of the primary calendar for August 17–22, 2026 returned eight events,
+including all five known work shifts at 7:00 AM–5:30 PM
+`America/Los_Angeles`; independent reads of those five IDs confirmed the same
+titles and equivalent instants. A separate August 24, 2026 3:00–3:01 AM Pacific
+window returned zero events and no pagination token, validating the healthy
+empty state. The independent read surface rendered a different numeric offset,
+so raw IANA timezone-field retrieval remains a Stable hardening item. Live
+calendar mutations remained **0**. Maturity remains **Prototype** pending the
+explicit promotion decision.
+
 ## 2026-08-23 — Deployed Railway/R2 durability acceptance
 
 Provisioned the Railway single-instance pilot and private Cloudflare R2 backup
