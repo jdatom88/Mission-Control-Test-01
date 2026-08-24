@@ -42,3 +42,6 @@ jobs:
 
       - name: Run Calendar Runtime Assembly acceptance
         run: python scripts/stage7_calendar_runtime_acceptance.py
+
+      - name: Run Knowledge Layer acceptance
+        run: python scripts/knowledge_layer_acceptance.py

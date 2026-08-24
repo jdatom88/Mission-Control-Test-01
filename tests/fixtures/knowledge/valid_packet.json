@@ -1,0 +1,69 @@
+{
+  "packet_kind": "mission_control.executive_status",
+  "schema_version": "1.0",
+  "packet_id": "packet-synthetic-001",
+  "identity": {
+    "domain_id": "synthetic-operations",
+    "domain_name": "Synthetic Operations",
+    "project_id": "project-orbit",
+    "project_name": "Project Orbit"
+  },
+  "lifecycle_status": "active",
+  "last_updated": "2026-08-24T09:30:00-07:00",
+  "current_focus": "Validate the shared status packet contract.",
+  "recent_progress": [
+    {
+      "entry_id": "progress-001",
+      "statement": "The synthetic schema review is complete.",
+      "provenance_ids": ["source-001"]
+    }
+  ],
+  "risks": [],
+  "opportunities": [
+    {
+      "entry_id": "opportunity-001",
+      "statement": "Reuse the packet across future domain adapters.",
+      "provenance_ids": ["source-002"]
+    }
+  ],
+  "active_tasks": [
+    {
+      "task_id": "task-001",
+      "title": "Run synthetic validation",
+      "status": "in_progress",
+      "due_at": "2026-08-25T17:00:00-07:00",
+      "provenance_ids": ["source-001"]
+    }
+  ],
+  "pending_decisions": [
+    {
+      "decision_id": "decision-001",
+      "question": "Is the prototype ready for canonical review?",
+      "consequence": "Approval permits publication for CI validation.",
+      "needed_by": null,
+      "provenance_ids": ["source-002"]
+    }
+  ],
+  "next_milestone": "Complete canonical CI validation.",
+  "confidence": 0.9,
+  "provenance": [
+    {
+      "provenance_id": "source-001",
+      "source_identity": "Synthetic test harness",
+      "source_reference": "fixture://knowledge/valid_packet",
+      "observed_at": "2026-08-24T09:15:00-07:00",
+      "classification": "fact",
+      "confidence": 1.0,
+      "rationale": "The harness directly observed the validation run."
+    },
+    {
+      "provenance_id": "source-002",
+      "source_identity": "Synthetic architecture review",
+      "source_reference": null,
+      "observed_at": "2026-08-24T09:20:00-07:00",
+      "classification": "recommendation",
+      "confidence": 0.8,
+      "rationale": "The proposed reuse reduces duplicate domain schemas."
+    }
+  ]
+}

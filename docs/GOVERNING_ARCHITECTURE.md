@@ -158,6 +158,26 @@ The application must:
 
 A native or installable application remains a later delivery option using the same backend boundaries.
 
+## Knowledge Layer packet boundary
+
+The first Generation 1 Knowledge Layer record is the versioned Executive Status
+Packet. JSON is the canonical interchange format. Mission Control owns the
+packet semantics while Pydantic 2 supplies replaceable validation and JSON
+Schema mechanics.
+
+Version `1.0` requires domain/project identity, lifecycle status, an
+offset-aware update time, current focus, progress, risks, opportunities, active
+tasks, pending decisions, next milestone, overall confidence, and provenance.
+Provenance distinguishes facts, assumptions, inferences, predictions, and
+recommendations while preserving source identity/reference, observation time,
+confidence, and rationale.
+
+Unknown fields and unsupported versions fail loudly; no future data is silently
+discarded. Real operator packets live outside the product repository. Runtime
+state uses a separate, non-nested external root. Credentials come only from a
+sealed environment or encrypted runtime credential store. The complete contract
+is specified in [Knowledge Layer Foundation](KNOWLEDGE_LAYER_FOUNDATION.md).
+
 ## Implementation sequencing
 
 Build vertical slices that prove value end to end before broadening the system.
@@ -179,8 +199,8 @@ Completed/closed sequence:
 
 Canonical Generation 1 implementation sequence:
 
-13. **Knowledge Layer Foundation** — complete and validate the Executive Status Packet schema, validator, data boundary, and evidence/provenance contract currently governed by GitHub Issue #21.
-14. **Single-Operator Railway Security Boundary** — private operator authentication, server-side Google OAuth, encrypted persistent refresh-token storage, restart validation, and credential read-back validation.
+13. **Knowledge Layer Foundation** — Tested; the Executive Status Packet schema, validator, data boundary, and evidence/provenance contract passed Issue #21 acceptance.
+14. **Single-Operator Railway Security Boundary** — current activated milestone; on explicit implementation instruction, implement private operator authentication, server-side Google OAuth, encrypted persistent refresh-token storage, restart validation, and credential read-back validation.
 15. **Private Mobile-Responsive Mission Control Web Application** — build the Generation 1 delivery surface using the accepted Knowledge Layer contract and existing single-runtime architecture.
 16. **Read-Only Gmail Intelligence Vertical Slice** — begin as a separately governed capability only after the preceding Generation 1 foundation and delivery-surface milestones are established.
 
