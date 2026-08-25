@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-08-25 — Generation 1 security boundary Phase A prototype
+
+Implemented the synthetic software half of Issue #23 without connecting a real
+Google account or changing Railway. Added a single-operator security policy,
+server-side Google Web Application OAuth adapter, hashed one-time OAuth state,
+encrypted PKCE verifier persistence, stable Google-subject pinning, opaque
+hashed operator sessions, and independent provider/primary-Calendar read-back
+before a persisted credential is trusted.
+
+Added logically separate SQLite stores for credentials and security
+runtime/audit state. Refresh tokens use PyCA AES-256-GCM with unique nonces,
+authenticated provider/operator context, and explicit key versions. Encryption
+keys and OAuth client secrets come only from runtime configuration and are
+redacted from representations. Normal startup refuses to create missing stores.
+Missing, corrupt, foreign-role, wrong-key, wrong-account, insufficient-scope,
+expired, replayed, and unverifiable states fail loudly.
+
+Added 19 focused tests and a separate-process Phase A acceptance harness. The
+complete repository suite passes **128 tests**. Existing Stage 4, Stage 5, Stage
+7, and Knowledge Layer harnesses remain green. The new harness reports
+`GEN1_SECURITY_PHASE_A_ACCEPTANCE=PASS`, separate-process restart, encrypted
+refresh-token persistence, operator/provider read-back, and fail-loud
+wrong-account/wrong-key evidence. Normal runtime opens also prove that a store
+deleted after startup is not silently recreated. Real operator data, live
+Google calls, calendar mutations, and external actions remained **0**.
+
+Single-Operator Railway Security Boundary advances from **Designed** to
+**Prototype**. It is not Tested: canonical CI, Google/Railway configuration,
+live operator authorization, deployed restart, and live provider read-back
+remain separately governed Phase B gates. No web application, Gmail capability,
+multi-user tenancy, deployment, live credential transfer, or production OAuth
+setup was started. Publication to a draft pull request for canonical CI was
+separately authorized after local acceptance.
+
 ## 2026-08-24 — Knowledge Layer Foundation prototype
 
 Implemented the first Generation 1 Knowledge Layer vertical slice governed by

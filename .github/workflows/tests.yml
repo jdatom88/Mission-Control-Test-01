@@ -45,3 +45,6 @@ jobs:
 
       - name: Run Knowledge Layer acceptance
         run: python scripts/knowledge_layer_acceptance.py
+
+      - name: Run Generation 1 security Phase A acceptance
+        run: python scripts/security_boundary_acceptance.py
