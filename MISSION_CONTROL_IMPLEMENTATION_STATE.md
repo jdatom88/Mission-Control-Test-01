@@ -91,6 +91,11 @@ The following capabilities already exist and remain available to Generation 1:
 - Publication of `issue-23-security-boundary` for canonical CI was explicitly
   authorized on August 25, 2026. This does not authorize merge, deployment,
   Google consent, live credentials, or Phase B acceptance.
+- Draft PR #27 is open on canonical implementation head
+  `335fa88fd72a318d0597aff9af6e83ed5254de13`.
+- Canonical GitHub Actions run #45 passed the 128-test suite, Stage 4/5/7,
+  Knowledge Layer, and Generation 1 security Phase A acceptance steps on that
+  implementation head.
 
 ## Knowledge Layer acceptance evidence
 
@@ -143,11 +148,10 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## NEXT
 
-1. Publish the Issue #23 Phase A Prototype on
-   `issue-23-security-boundary`, open a draft pull request, and run canonical CI.
-2. Record the canonical commit, draft PR, and CI evidence without claiming live
-   credential or deployment acceptance.
-3. After canonical CI passes and receives explicit operator review, prepare the exact Google Cloud and Railway
+1. Review draft PR #27 and its complete local/canonical Phase A evidence.
+2. Obtain explicit operator approval before marking the PR ready, merging it,
+   or beginning Phase B.
+3. After explicit approval, prepare the exact Google Cloud and Railway
    activation checklist without exposing secrets in chat or GitHub.
 4. On separate approval, complete controlled live OAuth, operator/Calendar
    read-back, Railway restart, and post-restart read-back acceptance.
@@ -156,8 +160,8 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 6. Preserve the deferred paid Stage 5 gates and keep Issue #25 Gmail work out of
    scope.
 
-**Single NEXT milestone:** complete canonical CI and review for the published
-Phase A Prototype.
+**Single NEXT milestone:** operator review of the canonical Phase A Prototype
+before any merge or Phase B activation.
 
 ## Do not start yet
 

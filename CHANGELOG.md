@@ -34,6 +34,13 @@ multi-user tenancy, deployment, live credential transfer, or production OAuth
 setup was started. Publication to a draft pull request for canonical CI was
 separately authorized after local acceptance.
 
+Draft PR #27 was published on implementation head
+`335fa88fd72a318d0597aff9af6e83ed5254de13`. Canonical GitHub Actions run #45
+passed the 128-test suite and every Stage 4/5/7, Knowledge Layer, and Generation
+1 security Phase A acceptance step. This canonical CI evidence does not change
+Prototype maturity or authorize merge, Railway deployment, Google consent, live
+credential transfer, or Phase B.
+
 ## 2026-08-24 — Knowledge Layer Foundation prototype
 
 Implemented the first Generation 1 Knowledge Layer vertical slice governed by
