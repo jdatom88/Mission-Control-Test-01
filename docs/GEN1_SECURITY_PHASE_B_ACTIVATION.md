@@ -2,10 +2,11 @@
 
 ## Status and authority
 
-This is a **documentation-only readiness checklist** for GitHub Issue #23.
-Preparing or reviewing it does not authorize Google Cloud configuration,
-Railway variable changes, store bootstrap, deployment, live OAuth, service
-restart, credential read-back, maturity promotion, or Issue #24 activation.
+This checklist governs GitHub Issue #23 Phase B. Gate A was implemented and
+reviewed in PR #28 under explicit operator approval. Its merge does not
+authorize Google Cloud configuration, Railway variable changes, live store
+bootstrap, deployment, live OAuth, service restart, live credential read-back,
+maturity promotion, or Issue #24 activation.
 
 Phase A is merged at **Prototype** maturity. Phase B must preserve the
 single-operator architecture, existing calendar approval rules, fail-loud
@@ -16,16 +17,19 @@ No secret value, authorization code, provider token, encryption key, or real
 operator knowledge may be pasted into chat, committed to GitHub, included in an
 issue/PR, or printed in an acceptance receipt.
 
-## Current prerequisite gap
+## Gate A result
 
-The merged repository contains the provider-neutral security policy, encrypted
-stores, Google OAuth adapter, and synthetic acceptance harness. It does **not**
-yet contain a deployed live OAuth start/callback entrypoint or a controlled
-Railway bootstrap/read-back runner.
+The reviewed repository now contains the narrow, default-off activation
+adapter. It adds OAuth start/callback/clean-completion routes, authenticated
+sanitized credential read-back, and explicit one-time bootstrap plus no-create
+structural check commands. It reuses the existing Railway HTTP listener and is
+enabled only by `MISSION_CONTROL_SECURITY_HTTP_ENABLED=true`.
 
-Phase B therefore begins with a narrow implementation gate. Do not configure a
-Google redirect URI or enter live Railway secrets until that adapter exists,
-passes synthetic tests and canonical CI, and receives separate merge approval.
+Canonical run #49 passed 136 tests and every existing acceptance harness on the
+initial PR #28 head. No Google or Railway configuration, live credential,
+deployment, provider grant, external action, or Calendar mutation occurred.
+Do not configure a Google redirect URI or enter live Railway secrets until Gate
+B or Gate C, respectively, receives its own approval.
 
 The narrow adapter may expose only what Issue #23 needs:
 
@@ -55,27 +59,27 @@ An approval at one gate does not carry forward to the next gate.
 
 ## Gate A — activation adapter readiness
 
-- [ ] Confirm work starts from current canonical `main` and Issue #23 remains
+- [x] Confirm work starts from current canonical `main` and Issue #23 remains
       the active milestone.
-- [ ] Add the smallest replaceable HTTP/command adapter required for live
+- [x] Add the smallest replaceable HTTP/command adapter required for live
       authorization, explicit bootstrap, and read-back.
-- [ ] Keep provider tokens server-side and use the existing
+- [x] Keep provider tokens server-side and use the existing
       `SingleOperatorSecurityBoundary` and `GoogleOAuthProvider` contracts.
-- [ ] Preserve one-time state, encrypted PKCE verifier, ten-minute default
+- [x] Preserve one-time state, encrypted PKCE verifier, ten-minute default
       transaction expiry, exact redirect URI, and replay rejection.
-- [ ] Ensure the callback consumes the authorization response, then redirects
+- [x] Ensure the callback consumes the authorization response, then redirects
       to a clean result URL that contains no OAuth query parameters.
-- [ ] Render only sanitized success/failure state. Do not embed analytics,
+- [x] Render only sanitized success/failure state. Do not embed analytics,
       remote scripts, images, or other third-party resources on the callback.
-- [ ] Add explicit one-time bootstrap behavior. Normal startup must continue to
+- [x] Add explicit one-time bootstrap behavior. Normal startup must continue to
       fail if an expected database is missing.
-- [ ] Add a sanitized live acceptance receipt format containing no secrets.
-- [ ] Prove the adapter cannot mutate Calendar or access Gmail.
-- [ ] Run the complete regression suite and all existing acceptance harnesses.
-- [ ] Publish through a dedicated branch/draft PR and canonical CI.
-- [ ] Obtain separate approval before marking that PR ready or merging it.
+- [x] Add a sanitized live acceptance receipt format containing no secrets.
+- [x] Prove the adapter cannot mutate Calendar or access Gmail.
+- [x] Run the complete regression suite and all existing acceptance harnesses.
+- [x] Publish through a dedicated branch/draft PR and canonical CI.
+- [x] Obtain separate approval before marking that PR ready or merging it.
 
-Gate A is complete only when the reviewed adapter is on canonical `main`.
+Gate A is complete when reviewed PR #28 is merged onto canonical `main`.
 
 ## Gate B — Google Cloud configuration
 
@@ -347,4 +351,3 @@ Do not promote the capability merely because OAuth succeeds.
 - [Railway secrets guidance](https://docs.railway.com/guides/managing-secrets-on-railway)
 - [Railway volumes](https://docs.railway.com/volumes)
 - [Railway restart behavior](https://docs.railway.com/cli/restart)
-

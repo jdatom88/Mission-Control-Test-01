@@ -10,7 +10,7 @@ GitHub is the authoritative source for implemented state. `CHANGELOG.md`, merged
 
 Mission Control OS has completed the calendar implementation track at **Tested** maturity and has a deployed single-runtime Railway/R2 durability boundary at **Prototype** maturity. Governance/canonical-state reconciliation is complete.
 
-The product is now in the **Generation 1 foundation and delivery-surface build phase**. The single-operator security boundary has completed synthetic Phase A implementation, canonical CI, and operator review at **Prototype** maturity.
+The product is now in the **Generation 1 foundation and delivery-surface build phase**. The single-operator security boundary has completed synthetic Phase A and the default-off Phase B Gate A activation adapter at **Prototype** maturity.
 
 The private mobile-responsive Mission Control web application is the ratified Generation 1 delivery surface. A native or installable application remains a later option that must reuse the same backend contracts and security boundaries.
 
@@ -25,10 +25,10 @@ token-persistence, restart, and read-back boundary is implemented and accepted
 for canonical integration at **Prototype** maturity. The operator explicitly
 authorized marking PR #27 ready and merging it on August 25, 2026. Live
 Google/Railway credentials, provider acceptance, deployment validation, and
-Phase B remain separately governed and unauthorized. A documentation-only
-Phase B activation checklist has been prepared for operator review; it exposes
-the still-missing live OAuth callback/bootstrap adapter as the first Phase B
-implementation gate.
+later Phase B gates remain separately governed and unauthorized. PR #28
+publishes the activation checklist and the reviewed Gate A OAuth
+callback/bootstrap/read-back adapter; its runtime flag remains disabled by
+default.
 
 ## Ratified Generation 1 implementation sequence
 
@@ -77,6 +77,26 @@ The following capabilities already exist and remain available to Generation 1:
 - Single-runtime SQLite durability and Railway/R2 deployment boundary — Prototype with deployed health, backup/read-back, fail-loud storage, and clean-restore evidence
 - Executive Status Packet Schema / Validator — Tested with strict JSON v1.0 validation, semantic round-trip, provenance-reference integrity, synthetic fixtures, and enforced external data-root boundaries
 - Single-Operator Railway Security Boundary — Prototype with server-side Google OAuth plumbing, AES-256-GCM credential persistence, pinned operator identity, hashed sessions, one-time OAuth/PKCE state, separate-process restart, and synthetic provider read-back evidence
+
+## Issue #23 Phase B Gate A acceptance evidence
+
+- The activation checklist separates Google Cloud, Railway/deployment, live
+  OAuth, restart, and promotion into independently approved gates.
+- The minimal HTTP adapter exposes OAuth start, exact configured callback,
+  clean completion, and authenticated sanitized read-back only.
+- An explicit bootstrap command creates the two approved stores once; ordinary
+  startup and the structural check never create replacements.
+- The existing Railway listener accepts the replaceable routes only when
+  `MISSION_CONTROL_SECURITY_HTTP_ENABLED=true`; the default remains `false`.
+- 8 focused Gate A tests pass; the complete repository suite passes 136 tests.
+- Existing Stage 4, Stage 5, Stage 7, Knowledge Layer, and security acceptance
+  harnesses remain green.
+- Canonical GitHub Actions run #49 passed on the initial PR #28 head.
+- Real operator data, live Google calls, external actions, and Calendar
+  mutations remained 0.
+- The operator explicitly authorized checklist publication and Gate A through
+  merge on August 25, 2026. This authorization does not extend to Gate B or
+  later gates.
 
 ## Issue #23 Phase A acceptance evidence
 
@@ -149,10 +169,10 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 ## Current blockers / dependencies
 
 - Issue #21 acceptance is complete; it no longer blocks Issue #23.
-- Issue #23 Phase A is reviewed and accepted for canonical integration at
-  Prototype. Direct Railway secret configuration, live Google OAuth, deployed
-  restart, and credential read-back acceptance remain required before Tested
-  maturity or Issue #24 activation.
+- Issue #23 Phase A and Phase B Gate A are reviewed for canonical integration at
+  Prototype. Google Cloud configuration, Railway secret/bootstrap/deployment,
+  live Google OAuth, deployed restart, and credential read-back acceptance
+  remain required before Tested maturity or Issue #24 activation.
 - Issue #24 must establish the Generation 1 delivery surface before Issue #25 Gmail Intelligence begins.
 - OAuth client secrets and encryption keys remain externally managed. Live
   refresh tokens will enter only the implemented encrypted vault after separate
@@ -161,14 +181,14 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## NEXT
 
-1. Review `docs/GEN1_SECURITY_PHASE_B_ACTIVATION.md` and its six independent
-   approval gates.
-2. Decide whether to authorize Gate A: implementation of the minimal live OAuth
-   callback, explicit bootstrap, and sanitized read-back adapter.
-3. Do not configure Google Cloud, enter Railway secrets, deploy the adapter, run
+1. Treat the merged checklist and Gate A adapter as Prototype software only.
+2. Decide whether to authorize Gate B: configure the dedicated Google Cloud
+   project, consent screen, exact four scopes, operator test user, and Web
+   Application OAuth client.
+3. Do not enter Railway secrets, bootstrap live stores, deploy the adapter, run
    live OAuth, or restart the service until each later gate receives its own
    explicit approval.
-4. After all separately approved Phase B gates, complete controlled live OAuth,
+4. After all separately approved remaining Phase B gates, complete controlled live OAuth,
    operator/Calendar read-back, Railway restart, post-restart read-back, and
    leakage inspection.
 5. Do not promote Issue #23 to Tested or begin Issue #24 until the live Phase B
@@ -176,9 +196,8 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 6. Preserve the deferred paid Stage 5 gates and keep Issue #25 Gmail work out of
    scope.
 
-**Single NEXT milestone:** operator review of the Phase B activation checklist
-and a separate decision on Gate A only. No live Google/Railway action is yet
-authorized.
+**Single NEXT milestone:** separate operator decision on Gate B Google Cloud
+configuration only. No Railway or live OAuth action is yet authorized.
 
 ## Do not start yet
 
