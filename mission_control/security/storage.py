@@ -547,8 +547,13 @@ class SqliteSecurityRuntimeStore:
             ) from exc
 
     def validate_integrity(self) -> None:
-        _validate_integrity(self.database_path, self.STORE_ROLE)
+        self.validate_database_integrity()
         self.load_operator()
+
+    def validate_database_integrity(self) -> None:
+        """Validate a bootstrapped runtime store before first enrollment."""
+
+        _validate_integrity(self.database_path, self.STORE_ROLE)
 
     def _connect(self) -> sqlite3.Connection:
         return _connect(self.database_path, self.STORE_ROLE)

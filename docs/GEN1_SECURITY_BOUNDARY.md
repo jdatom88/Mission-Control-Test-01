@@ -165,6 +165,13 @@ must never be pasted into chat or committed to GitHub.
 
 ## Phase B acceptance still required
 
+The governed preparation and execution gates are defined in
+[Generation 1 Security Phase B Activation Checklist](GEN1_SECURITY_PHASE_B_ACTIVATION.md).
+The current repository does not yet contain the live OAuth callback/bootstrap
+adapter required to execute that checklist. Implementing that narrow adapter is
+the first separately approved Phase B gate; checklist preparation itself does
+not authorize provider or deployment changes.
+
 Prototype does not become Tested until separately authorized live acceptance
 completes:
 

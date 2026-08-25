@@ -4,6 +4,8 @@ from mission_control.runtime.calendar_storage import (
     RuntimeStorageConfigurationError,
 )
 from mission_control.runtime.pilot_guardian import PilotGuardianConfig
+from mission_control.security.errors import SecurityConfigurationError
+from scripts.pilot_calendar_runtime import _security_route_handler
 
 
 def test_guardian_defaults_to_daily_backup_and_minute_checks():
@@ -39,3 +41,16 @@ def test_guardian_reads_explicit_runtime_values():
 def test_guardian_rejects_unsafe_schedule_values(name, value):
     with pytest.raises(RuntimeStorageConfigurationError):
         PilotGuardianConfig.from_environment({name: value})
+
+
+def test_security_http_routes_are_disabled_by_default(monkeypatch):
+    monkeypatch.delenv("MISSION_CONTROL_SECURITY_HTTP_ENABLED", raising=False)
+
+    assert _security_route_handler() is None
+
+
+def test_security_http_flag_fails_loudly_on_invalid_value(monkeypatch):
+    monkeypatch.setenv("MISSION_CONTROL_SECURITY_HTTP_ENABLED", "yes")
+
+    with pytest.raises(SecurityConfigurationError, match="must be true or false"):
+        _security_route_handler()

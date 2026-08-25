@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Mapping
 
+from mission_control.core.http import HttpResponse, HttpRouteHandler
+
 from mission_control.runtime.calendar_storage import (
     PilotRuntimeStorageConfig,
     RuntimeStorageConfigurationError,
@@ -117,7 +119,7 @@ class PilotStorageGuardian:
         }
         return self.last_backup
 
-    def serve(self) -> None:
+    def serve(self, route_handler: HttpRouteHandler | None = None) -> None:
         self.check_payload()
         if self.runtime.backup_on_start:
             self.backup()
@@ -125,21 +127,39 @@ class PilotStorageGuardian:
 
         class Handler(BaseHTTPRequestHandler):
             def do_GET(self) -> None:
-                if self.path != "/healthz":
-                    self.send_error(404)
-                    return
-                try:
-                    payload = guardian.check_payload()
-                    status = 200
-                except Exception as exc:
-                    payload = {"status": "unhealthy", "error": str(exc)}
-                    status = 503
-                body = json.dumps(payload, sort_keys=True).encode("utf-8")
-                self.send_response(status)
-                self.send_header("Content-Type", "application/json")
-                self.send_header("Content-Length", str(len(body)))
+                self._dispatch("GET")
+
+            def do_POST(self) -> None:
+                self._dispatch("POST")
+
+            def _dispatch(self, method: str) -> None:
+                if method == "GET" and self.path == "/healthz":
+                    try:
+                        payload = guardian.check_payload()
+                        response = HttpResponse(
+                            200,
+                            json.dumps(payload, sort_keys=True).encode("utf-8"),
+                            (("Content-Type", "application/json"),),
+                        )
+                    except Exception:
+                        response = HttpResponse(
+                            503,
+                            b'{"status":"unhealthy"}',
+                            (("Content-Type", "application/json"),),
+                        )
+                elif route_handler is not None:
+                    response = route_handler(method, self.path, self.headers)
+                    if response is None:
+                        response = HttpResponse(404, b"Not Found")
+                else:
+                    response = HttpResponse(404, b"Not Found")
+                self.send_response(response.status)
+                for name, value in response.headers:
+                    self.send_header(name, value)
+                self.send_header("Content-Length", str(len(response.body)))
                 self.end_headers()
-                self.wfile.write(body)
+                if response.body:
+                    self.wfile.write(response.body)
 
             def log_message(self, format: str, *args: object) -> None:
                 return

@@ -25,7 +25,10 @@ token-persistence, restart, and read-back boundary is implemented and accepted
 for canonical integration at **Prototype** maturity. The operator explicitly
 authorized marking PR #27 ready and merging it on August 25, 2026. Live
 Google/Railway credentials, provider acceptance, deployment validation, and
-Phase B remain separately governed and unauthorized.
+Phase B remain separately governed and unauthorized. A documentation-only
+Phase B activation checklist has been prepared for operator review; it exposes
+the still-missing live OAuth callback/bootstrap adapter as the first Phase B
+implementation gate.
 
 ## Ratified Generation 1 implementation sequence
 
@@ -158,21 +161,24 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## NEXT
 
-1. Complete and verify the explicitly authorized canonical merge of PR #27; the
-   PR and Issue #23 histories are authoritative for the resulting merge commit.
-2. Prepare the exact Google Cloud and Railway
-   activation checklist without exposing secrets in chat or GitHub.
-3. Obtain separate explicit approval before beginning Phase B.
-4. On that separate approval, complete controlled live OAuth, operator/Calendar
-   read-back, Railway restart, and post-restart read-back acceptance.
+1. Review `docs/GEN1_SECURITY_PHASE_B_ACTIVATION.md` and its six independent
+   approval gates.
+2. Decide whether to authorize Gate A: implementation of the minimal live OAuth
+   callback, explicit bootstrap, and sanitized read-back adapter.
+3. Do not configure Google Cloud, enter Railway secrets, deploy the adapter, run
+   live OAuth, or restart the service until each later gate receives its own
+   explicit approval.
+4. After all separately approved Phase B gates, complete controlled live OAuth,
+   operator/Calendar read-back, Railway restart, post-restart read-back, and
+   leakage inspection.
 5. Do not promote Issue #23 to Tested or begin Issue #24 until the live Phase B
    evidence and explicit operator approval exist.
 6. Preserve the deferred paid Stage 5 gates and keep Issue #25 Gmail work out of
    scope.
 
-**Single NEXT milestone:** after verifying the authorized PR #27 merge, prepare
-the Phase B activation checklist and wait for separate approval before any live
-Google/Railway action.
+**Single NEXT milestone:** operator review of the Phase B activation checklist
+and a separate decision on Gate A only. No live Google/Railway action is yet
+authorized.
 
 ## Do not start yet
 
