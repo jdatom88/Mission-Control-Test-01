@@ -2,10 +2,12 @@
 
 ## Status
 
-Issue #23 Phase A is implemented at **Prototype** maturity using synthetic
-identity and credential data only. The software boundary has passed local and
-separate-process acceptance. It has not completed Google OAuth, Railway secret,
-deployed restart, or live provider read-back acceptance.
+Issue #23 Phase A and Phase B Gate A are implemented at **Prototype** maturity
+using synthetic identity and credential data only. The software boundary and
+default-off activation adapter have passed local, separate-process, and
+canonical CI acceptance. It has not completed Google Cloud configuration,
+Railway secret/bootstrap/deployment work, live Google OAuth, deployed restart,
+or live provider read-back acceptance.
 
 Synthetic acceptance must never be reported as deployed or credential
 acceptance.
@@ -164,6 +166,13 @@ must never be pasted into chat or committed to GitHub.
 - External actions: 0.
 
 ## Phase B acceptance still required
+
+The governed preparation and execution gates are defined in
+[Generation 1 Security Phase B Activation Checklist](GEN1_SECURITY_PHASE_B_ACTIVATION.md).
+The current repository does not yet contain the live OAuth callback/bootstrap
+adapter required to execute that checklist. Implementing that narrow adapter is
+the first separately approved Phase B gate; checklist preparation itself does
+not authorize provider or deployment changes.
 
 Prototype does not become Tested until separately authorized live acceptance
 completes:

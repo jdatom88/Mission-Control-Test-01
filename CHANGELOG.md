@@ -1,5 +1,56 @@
 # Changelog
 
+## 2026-08-25 — Generation 1 security Phase B Gate A adapter
+
+Published the six-gate Issue #23 Phase B activation checklist and implemented
+the separately authorized Gate A adapter. The existing Railway guardian now
+accepts a replaceable route handler on its single HTTP listener. The security
+adapter provides OAuth start, exact configured callback reconstruction, a clean
+completion redirect with no OAuth query parameters, and authenticated
+persisted-credential read-back with a sanitized zero-mutation receipt.
+
+Added an explicit one-time security-store bootstrap command and a normal
+no-create structural check. The deployed runtime integration is guarded by
+`MISSION_CONTROL_SECURITY_HTTP_ENABLED`, which is `false` by default; merging
+the code therefore does not activate OAuth or require live secrets. Callback
+and result responses use no-store, no-referrer, restrictive CSP, and nosniff
+headers. Provider tokens remain server-side, sessions use Secure/HttpOnly/
+SameSite=Lax cookies, and raw provider subjects are fingerprinted in receipts.
+
+Added 8 focused HTTP, bootstrap, and default-off tests. The complete repository
+suite passes **136 tests**, and Stage 4, Stage 5, Stage 7, Knowledge Layer, and
+Generation 1 security acceptance harnesses remain green. Canonical GitHub
+Actions run #49 passed on the initial PR #28 head. Real operator data, live
+Google calls, external actions, and Calendar mutations remained **0**.
+
+The operator explicitly authorized checklist publication and Gate A through
+merge. Capability maturity remains **Prototype**. This work does not configure
+Google Cloud or Railway, enter secrets, bootstrap live stores, deploy/restart
+the service, run live OAuth/read-back, promote maturity, close Issue #23, or
+begin Issue #24. The single NEXT milestone is a separate decision on Gate B
+Google Cloud configuration only.
+
+## 2026-08-25 — Phase B activation checklist prepared
+
+Prepared a documentation-only Google Cloud and Railway activation checklist for
+Issue #23 Phase B. It separates six approval gates: minimal callback/bootstrap
+adapter implementation, Google Cloud configuration, Railway configuration and
+deployment, live OAuth/read-back, restart/post-restart read-back, and final
+acceptance/promotion.
+
+Repository review confirmed that merged Phase A contains the security policy,
+encrypted stores, Google adapter, and synthetic acceptance harness but does not
+yet contain a deployed OAuth callback or live bootstrap/read-back entrypoint.
+The checklist makes that narrow adapter the first Phase B implementation gate
+rather than pretending the current Railway runtime can execute live OAuth.
+
+The checklist records the exact four Google scopes, nine Railway variables,
+separate volume roots, sealed-secret handling, seven-day External/Testing token
+limit, zero-calendar-mutation rule, restart/read-back evidence, leakage checks,
+and stop/recovery conditions. Capability maturity remains **Prototype**. No
+Google Cloud setting, Railway variable, secret, deployment, provider grant,
+restart, external action, or calendar mutation was performed or authorized.
+
 ## 2026-08-25 — Generation 1 security boundary Phase A prototype
 
 Implemented the synthetic software half of Issue #23 without connecting a real

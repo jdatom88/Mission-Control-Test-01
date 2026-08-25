@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -19,6 +20,14 @@ from mission_control.runtime.pilot_guardian import (
     PilotGuardianConfig,
     PilotStorageGuardian,
 )
+from mission_control.security.config import SecurityBoundaryConfig
+from mission_control.security.errors import (
+    SecurityBoundaryError,
+    SecurityConfigurationError,
+)
+from mission_control.security.google_oauth import GoogleOAuthProvider
+from mission_control.security.http_adapter import SecurityHttpAdapter
+from mission_control.security.service import open_security_boundary
 
 
 def main() -> None:
@@ -41,10 +50,33 @@ def main() -> None:
             ),
             flush=True,
         )
-        guardian.serve()
-    except RuntimeStorageError as exc:
+        route_handler = _security_route_handler()
+        guardian.serve(route_handler=route_handler)
+    except (RuntimeStorageError, SecurityBoundaryError) as exc:
         print(f"PILOT_RUNTIME_ERROR: {exc}", file=sys.stderr, flush=True)
         raise SystemExit(2) from exc
+
+
+def _security_route_handler():
+    enabled = (
+        os.environ.get("MISSION_CONTROL_SECURITY_HTTP_ENABLED", "false")
+        .strip()
+        .lower()
+    )
+    if enabled not in {"true", "false"}:
+        raise SecurityConfigurationError(
+            "MISSION_CONTROL_SECURITY_HTTP_ENABLED must be true or false."
+        )
+    if enabled == "false":
+        return None
+    config = SecurityBoundaryConfig.from_environment(repository_root=REPOSITORY_ROOT)
+    boundary = open_security_boundary(config)
+    provider = GoogleOAuthProvider(
+        client_id=config.google_oauth_client_id,
+        client_secret=config.google_oauth_client_secret,
+        redirect_uri=config.google_oauth_redirect_uri,
+    )
+    return SecurityHttpAdapter(boundary, provider, config.google_oauth_redirect_uri)
 
 
 if __name__ == "__main__":
