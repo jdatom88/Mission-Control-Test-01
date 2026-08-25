@@ -144,6 +144,20 @@ That boundary must provide:
 
 The security boundary is for one operator only. It is not a tenancy model and must not create generalized user-account infrastructure beyond what the private Generation 1 operator surface requires.
 
+Issue #23 Phase A implements this boundary as two logically separate SQLite
+stores behind Mission Control-owned adapters: an AES-256-GCM encrypted provider
+credential vault and a security runtime store for the pinned operator identity,
+one-time OAuth/PKCE state, hashed sessions, and sanitized audit events. Normal
+startup refuses to create missing stores. The thin Google adapter uses the
+maintained server-side OAuth library and performs independent identity plus
+primary-Calendar metadata read-back before a persisted credential is trusted.
+The complete implementation and Phase B acceptance contract is specified in
+[Generation 1 Single-Operator Security Boundary](GEN1_SECURITY_BOUNDARY.md).
+
+This synthetic Phase A evidence establishes **Prototype**, not Tested,
+maturity. Railway secret configuration, live Google authorization, deployed
+restart, and live provider read-back remain separate acceptance gates.
+
 ## Generation 1 web application boundary
 
 After the single-operator security boundary is accepted, Mission Control may build the private mobile-responsive web application.

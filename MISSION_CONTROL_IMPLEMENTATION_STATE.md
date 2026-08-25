@@ -10,7 +10,7 @@ GitHub is the authoritative source for implemented state. `CHANGELOG.md`, merged
 
 Mission Control OS has completed the calendar implementation track at **Tested** maturity and has a deployed single-runtime Railway/R2 durability boundary at **Prototype** maturity. Governance/canonical-state reconciliation is complete.
 
-The product is now in the **Generation 1 foundation and delivery-surface build phase**.
+The product is now in the **Generation 1 foundation and delivery-surface build phase**. The single-operator security boundary has completed synthetic Phase A implementation, canonical CI, and operator review at **Prototype** maturity.
 
 The private mobile-responsive Mission Control web application is the ratified Generation 1 delivery surface. A native or installable application remains a later option that must reuse the same backend contracts and security boundaries.
 
@@ -19,9 +19,13 @@ The private mobile-responsive Mission Control web application is the ratified Ge
 **Generation 1 Milestone 2 — Single-Operator Railway Security Boundary, governed by GitHub Issue #23.**
 
 Generation 1 Milestone 1 is accepted at **Tested** maturity on local and
-canonical validation plus explicit operator approval. Issue #23 is activated as
-the next milestone, but its private-authentication, OAuth, and token-persistence
-implementation has not begun in this promotion update.
+canonical validation plus explicit operator approval. Issue #23 remains the
+active milestone. Its synthetic Phase A private-authentication, OAuth,
+token-persistence, restart, and read-back boundary is implemented and accepted
+for canonical integration at **Prototype** maturity. The operator explicitly
+authorized marking PR #27 ready and merging it on August 25, 2026. Live
+Google/Railway credentials, provider acceptance, deployment validation, and
+Phase B remain separately governed and unauthorized.
 
 ## Ratified Generation 1 implementation sequence
 
@@ -69,6 +73,36 @@ The following capabilities already exist and remain available to Generation 1:
 - Calendar Runtime Assembly — Tested
 - Single-runtime SQLite durability and Railway/R2 deployment boundary — Prototype with deployed health, backup/read-back, fail-loud storage, and clean-restore evidence
 - Executive Status Packet Schema / Validator — Tested with strict JSON v1.0 validation, semantic round-trip, provenance-reference integrity, synthetic fixtures, and enforced external data-root boundaries
+- Single-Operator Railway Security Boundary — Prototype with server-side Google OAuth plumbing, AES-256-GCM credential persistence, pinned operator identity, hashed sessions, one-time OAuth/PKCE state, separate-process restart, and synthetic provider read-back evidence
+
+## Issue #23 Phase A acceptance evidence
+
+- 19 focused security-boundary tests pass.
+- The complete repository suite passes 128 tests.
+- Separate Python processes complete initial synthetic authorization, reopen the
+  stores, authenticate the existing session, refresh/read back the persisted
+  provider context, and reject wrong-account plus wrong-key cases.
+- Provider refresh-token and session plaintext are absent from their SQLite
+  stores.
+- Existing Stage 4, Stage 5, Stage 7, and Knowledge Layer acceptance remain
+  green.
+- Real operator data used: 0.
+- Live Google calls: 0.
+- External actions and calendar mutations: 0.
+- Publication of `issue-23-security-boundary` for canonical CI was explicitly
+  authorized on August 25, 2026.
+- PR #27 implementation head is
+  `335fa88fd72a318d0597aff9af6e83ed5254de13`; its evidence head before the
+  operator-review update is `cc448bfc248620922f1e463c34e21ba2f992228e`.
+- Canonical GitHub Actions run #45 passed the 128-test suite, Stage 4/5/7,
+  Knowledge Layer, and Generation 1 security Phase A acceptance steps on that
+  implementation head.
+- Canonical GitHub Actions run #46 passed the same complete validation on the
+  final published evidence head.
+- The operator reviewed Phase A and explicitly authorized marking PR #27 ready
+  and merging it on August 25, 2026. This authorizes Prototype integration only;
+  it does not authorize Railway deployment, Google consent, live credentials,
+  Phase B acceptance, or Tested promotion.
 
 ## Knowledge Layer acceptance evidence
 
@@ -92,7 +126,7 @@ Detailed historical implementation and acceptance evidence remains in `CHANGELOG
 - Pilot Runtime SQLite Durability remains Prototype by explicit operator decision because paid Railway snapshot/provider-retention gates are deferred until Pilot RC1 or equivalent whole-OS value justifies the spend.
 - Raw Google IANA timezone-field retrieval remains a Calendar Stable-hardening item.
 - No full Briefing Engine is implemented in the product runtime yet.
-- No authenticated Generation 1 web UI exists yet.
+- The security backend is Prototype; no authenticated Generation 1 web UI exists yet.
 - No Gmail Intelligence runtime exists yet.
 
 ## Governing constraints for Generation 1
@@ -112,27 +146,40 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 ## Current blockers / dependencies
 
 - Issue #21 acceptance is complete; it no longer blocks Issue #23.
-- Issue #23 is activated but implementation has not begun. It must establish the private operator and Google OAuth/token-security boundary before Issue #24 becomes an operational private web surface.
+- Issue #23 Phase A is reviewed and accepted for canonical integration at
+  Prototype. Direct Railway secret configuration, live Google OAuth, deployed
+  restart, and credential read-back acceptance remain required before Tested
+  maturity or Issue #24 activation.
 - Issue #24 must establish the Generation 1 delivery surface before Issue #25 Gmail Intelligence begins.
-- OAuth credentials remain externally managed until the server-side encrypted token boundary is deliberately implemented; no credential material belongs in GitHub.
+- OAuth client secrets and encryption keys remain externally managed. Live
+  refresh tokens will enter only the implemented encrypted vault after separate
+  Phase B authorization; no credential material belongs in GitHub.
 - Paid Railway snapshots and provider-retention hardening remain intentionally deferred and are not prerequisites for the four ratified Generation 1 milestones unless new evidence makes them necessary.
 
 ## NEXT
 
-1. Close the Issue #21/PR #26 merge gate with the complete acceptance evidence.
-2. Treat Issue #23 as the single active Generation 1 milestone.
-3. In the next implementation session, perform the canonical preflight and read
-   Issue #23 before designing or writing security-boundary code.
-4. Do not begin Issue #24 or Issue #25 until their preceding dependency is
-   accepted.
-5. Preserve the deferred paid Stage 5 gates.
+1. Complete and verify the explicitly authorized canonical merge of PR #27; the
+   PR and Issue #23 histories are authoritative for the resulting merge commit.
+2. Prepare the exact Google Cloud and Railway
+   activation checklist without exposing secrets in chat or GitHub.
+3. Obtain separate explicit approval before beginning Phase B.
+4. On that separate approval, complete controlled live OAuth, operator/Calendar
+   read-back, Railway restart, and post-restart read-back acceptance.
+5. Do not promote Issue #23 to Tested or begin Issue #24 until the live Phase B
+   evidence and explicit operator approval exist.
+6. Preserve the deferred paid Stage 5 gates and keep Issue #25 Gmail work out of
+   scope.
+
+**Single NEXT milestone:** after verifying the authorized PR #27 merge, prepare
+the Phase B activation checklist and wait for separate approval before any live
+Google/Railway action.
 
 ## Do not start yet
 
 Until the dependency sequence permits it, do not implement:
 
-- Issue #23 security-boundary code merely by activating the issue; begin only on
-  an explicit implementation instruction
+- Issue #23 Phase B Google/Railway configuration, deployment, or live
+  authorization without separate approval
 - Issue #24 web application before the security boundary is accepted
 - Issue #25 Gmail Intelligence before the private web surface is established
 - Gmail mutation
