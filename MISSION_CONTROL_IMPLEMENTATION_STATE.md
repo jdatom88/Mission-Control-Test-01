@@ -10,7 +10,7 @@ GitHub is the authoritative source for implemented state. `CHANGELOG.md`, merged
 
 Mission Control OS has completed the calendar implementation track at **Tested** maturity and has a deployed single-runtime Railway/R2 durability boundary at **Prototype** maturity. Governance/canonical-state reconciliation is complete.
 
-The product is now in the **Generation 1 foundation and delivery-surface build phase**. The single-operator security boundary has completed its local synthetic Phase A implementation at **Prototype** maturity.
+The product is now in the **Generation 1 foundation and delivery-surface build phase**. The single-operator security boundary has completed synthetic Phase A implementation, canonical CI, and operator review at **Prototype** maturity.
 
 The private mobile-responsive Mission Control web application is the ratified Generation 1 delivery surface. A native or installable application remains a later option that must reuse the same backend contracts and security boundaries.
 
@@ -21,10 +21,11 @@ The private mobile-responsive Mission Control web application is the ratified Ge
 Generation 1 Milestone 1 is accepted at **Tested** maturity on local and
 canonical validation plus explicit operator approval. Issue #23 remains the
 active milestone. Its synthetic Phase A private-authentication, OAuth,
-token-persistence, restart, and read-back boundary is implemented at
-**Prototype** maturity and is being published for canonical CI. Publication was
-explicitly authorized on August 25, 2026; live Google/Railway credentials,
-provider acceptance, and deployment validation remain unauthorized.
+token-persistence, restart, and read-back boundary is implemented and accepted
+for canonical integration at **Prototype** maturity. The operator explicitly
+authorized marking PR #27 ready and merging it on August 25, 2026. Live
+Google/Railway credentials, provider acceptance, deployment validation, and
+Phase B remain separately governed and unauthorized.
 
 ## Ratified Generation 1 implementation sequence
 
@@ -89,13 +90,19 @@ The following capabilities already exist and remain available to Generation 1:
 - Live Google calls: 0.
 - External actions and calendar mutations: 0.
 - Publication of `issue-23-security-boundary` for canonical CI was explicitly
-  authorized on August 25, 2026. This does not authorize merge, deployment,
-  Google consent, live credentials, or Phase B acceptance.
-- Draft PR #27 is open on canonical implementation head
-  `335fa88fd72a318d0597aff9af6e83ed5254de13`.
+  authorized on August 25, 2026.
+- PR #27 implementation head is
+  `335fa88fd72a318d0597aff9af6e83ed5254de13`; its evidence head before the
+  operator-review update is `cc448bfc248620922f1e463c34e21ba2f992228e`.
 - Canonical GitHub Actions run #45 passed the 128-test suite, Stage 4/5/7,
   Knowledge Layer, and Generation 1 security Phase A acceptance steps on that
   implementation head.
+- Canonical GitHub Actions run #46 passed the same complete validation on the
+  final published evidence head.
+- The operator reviewed Phase A and explicitly authorized marking PR #27 ready
+  and merging it on August 25, 2026. This authorizes Prototype integration only;
+  it does not authorize Railway deployment, Google consent, live credentials,
+  Phase B acceptance, or Tested promotion.
 
 ## Knowledge Layer acceptance evidence
 
@@ -139,7 +146,10 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 ## Current blockers / dependencies
 
 - Issue #21 acceptance is complete; it no longer blocks Issue #23.
-- Issue #23 Phase A is implemented locally at Prototype. It still requires review, canonical CI, direct Railway secret configuration, live Google OAuth, deployed restart, and credential read-back acceptance before Tested maturity or Issue #24 activation.
+- Issue #23 Phase A is reviewed and accepted for canonical integration at
+  Prototype. Direct Railway secret configuration, live Google OAuth, deployed
+  restart, and credential read-back acceptance remain required before Tested
+  maturity or Issue #24 activation.
 - Issue #24 must establish the Generation 1 delivery surface before Issue #25 Gmail Intelligence begins.
 - OAuth client secrets and encryption keys remain externally managed. Live
   refresh tokens will enter only the implemented encrypted vault after separate
@@ -148,20 +158,21 @@ One cloud Mission Control runtime remains the single writer to operator-owned st
 
 ## NEXT
 
-1. Review draft PR #27 and its complete local/canonical Phase A evidence.
-2. Obtain explicit operator approval before marking the PR ready, merging it,
-   or beginning Phase B.
-3. After explicit approval, prepare the exact Google Cloud and Railway
+1. Complete and verify the explicitly authorized canonical merge of PR #27; the
+   PR and Issue #23 histories are authoritative for the resulting merge commit.
+2. Prepare the exact Google Cloud and Railway
    activation checklist without exposing secrets in chat or GitHub.
-4. On separate approval, complete controlled live OAuth, operator/Calendar
+3. Obtain separate explicit approval before beginning Phase B.
+4. On that separate approval, complete controlled live OAuth, operator/Calendar
    read-back, Railway restart, and post-restart read-back acceptance.
 5. Do not promote Issue #23 to Tested or begin Issue #24 until the live Phase B
    evidence and explicit operator approval exist.
 6. Preserve the deferred paid Stage 5 gates and keep Issue #25 Gmail work out of
    scope.
 
-**Single NEXT milestone:** operator review of the canonical Phase A Prototype
-before any merge or Phase B activation.
+**Single NEXT milestone:** after verifying the authorized PR #27 merge, prepare
+the Phase B activation checklist and wait for separate approval before any live
+Google/Railway action.
 
 ## Do not start yet
 
