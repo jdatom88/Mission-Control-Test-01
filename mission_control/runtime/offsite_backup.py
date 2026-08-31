@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Mapping, Protocol
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from mission_control.capabilities.briefing.persistence import (
@@ -68,6 +69,20 @@ class OffsiteBackupConfig:
             raise OffsiteBackupConfigurationError(
                 "The object-storage region must be explicit."
             )
+        if endpoint:
+            parsed_endpoint = urlsplit(endpoint)
+            if (
+                parsed_endpoint.scheme != "https"
+                or not parsed_endpoint.hostname
+                or parsed_endpoint.username
+                or parsed_endpoint.password
+                or parsed_endpoint.query
+                or parsed_endpoint.fragment
+            ):
+                raise OffsiteBackupConfigurationError(
+                    "The object-storage endpoint must be an HTTPS URL without "
+                    "embedded credentials, a query, or a fragment."
+                )
         object.__setattr__(self, "bucket", bucket)
         object.__setattr__(self, "prefix", prefix)
         object.__setattr__(self, "endpoint_url", endpoint)
@@ -84,13 +99,18 @@ class OffsiteBackupConfig:
             raise OffsiteBackupConfigurationError(
                 "MISSION_CONTROL_OFFSITE_BUCKET is required."
             )
+        endpoint = values.get("MISSION_CONTROL_OFFSITE_ENDPOINT_URL", "")
+        if not endpoint.strip():
+            raise OffsiteBackupConfigurationError(
+                "MISSION_CONTROL_OFFSITE_ENDPOINT_URL is required."
+            )
         return cls(
             bucket=bucket,
             prefix=values.get(
                 "MISSION_CONTROL_OFFSITE_PREFIX",
                 "mission-control/calendar-state",
             ),
-            endpoint_url=values.get("MISSION_CONTROL_OFFSITE_ENDPOINT_URL"),
+            endpoint_url=endpoint,
             region_name=values.get("MISSION_CONTROL_OFFSITE_REGION", "auto"),
         )
 
@@ -135,11 +155,17 @@ def create_s3_client(config: OffsiteBackupConfig) -> ObjectStorageClient:
         raise OffsiteBackupConfigurationError(
             "boto3 is required for S3-compatible offsite backup operations."
         ) from exc
-    return boto3.client(
-        "s3",
-        endpoint_url=config.endpoint_url,
-        region_name=config.region_name,
-    )
+    try:
+        return boto3.client(
+            "s3",
+            endpoint_url=config.endpoint_url,
+            region_name=config.region_name,
+        )
+    except Exception as exc:
+        raise _classified_offsite_error(
+            "Object-storage client initialization",
+            exc,
+        ) from None
 
 
 def publish_backup_and_verify(
@@ -157,7 +183,6 @@ def publish_backup_and_verify(
             "The local backup changed before offsite publication."
         )
     key = offsite.object_key(inspected.backup_path.name)
-    s3 = client or create_s3_client(offsite)
     metadata = {
         "sha256": inspected.sha256,
         "proposal-count": str(inspected.proposal_count),
@@ -165,6 +190,7 @@ def publish_backup_and_verify(
         "receipt-count": str(inspected.receipt_count),
     }
     try:
+        s3 = client or create_s3_client(offsite)
         with inspected.backup_path.open("rb") as source:
             s3.put_object(
                 Bucket=offsite.bucket,
@@ -199,10 +225,7 @@ def publish_backup_and_verify(
     except RuntimeStorageError:
         raise
     except Exception as exc:
-        raise OffsiteBackupError(
-            "S3-compatible publication or read-back failed; no verified offsite "
-            "backup receipt was issued."
-        ) from exc
+        raise _classified_offsite_error("Offsite upload", exc) from None
     return OffsiteBackupReceipt(
         bucket=offsite.bucket,
         object_key=key,
@@ -237,8 +260,13 @@ def fetch_backup_and_verify(
         raise RuntimeStorageConfigurationError(
             "Offsite fetch refused to overwrite an existing local backup."
         )
-    s3 = client or create_s3_client(offsite)
-    partial = _read_object_to_partial(storage, offsite, object_key, s3)
+    try:
+        s3 = client or create_s3_client(offsite)
+        partial = _read_object_to_partial(storage, offsite, object_key, s3)
+    except RuntimeStorageError:
+        raise
+    except Exception as exc:
+        raise _classified_offsite_error("Offsite fetch", exc) from None
     try:
         os.link(partial, destination)
         partial.unlink()
@@ -298,9 +326,122 @@ def _read_object_to_partial(
         raise
     except Exception as exc:
         partial.unlink(missing_ok=True)
-        raise OffsiteBackupError(
-            "The offsite backup could not be downloaded and verified."
-        ) from exc
+        raise _classified_offsite_error("Offsite read-back", exc) from None
+
+
+_AUTHENTICATION_ERROR_CODES = frozenset(
+    {
+        "ExpiredToken",
+        "InvalidAccessKeyId",
+        "InvalidToken",
+        "RequestExpired",
+        "SignatureDoesNotMatch",
+        "TokenRefreshRequired",
+        "UnrecognizedClientException",
+    }
+)
+_AUTHORIZATION_ERROR_CODES = frozenset(
+    {
+        "403",
+        "AccessDenied",
+        "AccessDeniedException",
+        "AllAccessDisabled",
+        "Forbidden",
+        "Unauthorized",
+        "UnauthorizedAccess",
+    }
+)
+_MISSING_BUCKET_ERROR_CODES = frozenset({"404", "NoSuchBucket", "NotFound"})
+_CONFLICT_ERROR_CODES = frozenset(
+    {
+        "409",
+        "412",
+        "ConditionalRequestConflict",
+        "OperationAborted",
+        "PreconditionFailed",
+    }
+)
+_RATE_LIMIT_ERROR_CODES = frozenset(
+    {
+        "429",
+        "RequestLimitExceeded",
+        "SlowDown",
+        "Throttling",
+        "ThrottlingException",
+        "TooManyRequestsException",
+    }
+)
+
+
+def _classified_offsite_error(operation: str, exc: Exception) -> OffsiteBackupError:
+    """Return an actionable error without copying provider messages or secrets."""
+
+    code = _provider_error_code(exc)
+    error_type = type(exc).__name__
+    if code in _AUTHENTICATION_ERROR_CODES or error_type in {
+        "CredentialRetrievalError",
+        "NoCredentialsError",
+        "PartialCredentialsError",
+    }:
+        detail = "object-storage credentials are missing, rejected, or expired"
+    elif code in _AUTHORIZATION_ERROR_CODES:
+        detail = (
+            "object-storage credentials do not permit the configured bucket "
+            "operation"
+        )
+    elif code in _MISSING_BUCKET_ERROR_CODES:
+        detail = "the configured object-storage bucket was not found"
+    elif code in _CONFLICT_ERROR_CODES:
+        detail = (
+            "the object key already exists or a concurrent conditional write won"
+        )
+    elif code in _RATE_LIMIT_ERROR_CODES:
+        detail = "the object-storage provider temporarily rate-limited the request"
+    elif error_type in {
+        "ConnectTimeoutError",
+        "ConnectionClosedError",
+        "EndpointConnectionError",
+        "HTTPClientError",
+        "ProxyConnectionError",
+        "ReadTimeoutError",
+    }:
+        detail = "the configured object-storage endpoint could not be reached"
+    elif error_type == "SSLError":
+        detail = "TLS verification failed for the object-storage endpoint"
+    elif error_type in {
+        "InvalidRegionError",
+        "NoRegionError",
+        "ParamValidationError",
+        "ProfileNotFound",
+        "UnknownSignatureVersionError",
+    }:
+        detail = "the object-storage client configuration is invalid"
+    elif code:
+        detail = f"the provider returned an unclassified error ({code})"
+    else:
+        detail = "the provider request failed for an unclassified reason"
+    return OffsiteBackupError(
+        f"{operation} failed: {detail}; no verified offsite backup receipt was issued."
+    )
+
+
+def _provider_error_code(exc: Exception) -> str | None:
+    response = getattr(exc, "response", None)
+    if not isinstance(response, Mapping):
+        return None
+    error = response.get("Error")
+    if not isinstance(error, Mapping):
+        return None
+    value = error.get("Code")
+    if value is None:
+        return None
+    code = str(value)
+    if not 1 <= len(code) <= 64 or not all(
+        character.isalnum() or character in {"-", "_", "."}
+        for character in code
+    ):
+        return None
+    return code
 
 
 def _receipt_semantics(receipt: BackupReceipt) -> tuple[str, int, int, int]:

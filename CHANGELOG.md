@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-08-27 — Cloudflare R2 integration diagnostics hardening
+
+Reconciled the Railway/R2 runbook with the deployed August acceptance evidence
+and kept Pilot Runtime SQLite Durability at **Prototype** while the Railway
+snapshot, volume-encryption, and R2 retention-control gates remain pending.
+
+The deployed environment now fails early when its explicit offsite endpoint is
+missing or is not a safe HTTPS URL. S3-compatible failures are classified into
+bounded authentication, authorization, missing-bucket, conditional-write,
+rate-limit, endpoint, TLS, and client-configuration categories without copying
+provider response messages, embedded endpoint credentials, or request data into
+operator-visible errors. Existing checksum, semantic read-back, safe-fetch, and
+no-overwrite behavior is unchanged.
+
+Added 6 focused R2 configuration, error-classification, and redaction cases.
+The complete repository suite passes **142 tests**; dependency checks and the
+Stage 4, Stage 5, Stage 7, Knowledge Layer, and Generation 1 security acceptance
+harnesses remain green. Live provider calls, external actions, and calendar
+mutations performed by this local validation remained **0**.
+
 ## 2026-08-25 — Generation 1 security Phase B Gate A adapter
 
 Published the six-gate Issue #23 Phase B activation checklist and implemented

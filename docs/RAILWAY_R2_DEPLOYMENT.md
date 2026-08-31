@@ -3,9 +3,14 @@
 ## Status
 
 Railway is the selected pilot application host and Cloudflare R2 is the
-selected provider-independent backup target. The repository is deployment
-ready, but neither account has been provisioned and no deployed acceptance has
-been claimed.
+selected provider-independent backup target. Both were provisioned for the
+single-operator pilot in August 2026. Deployed acceptance verified runtime
+health, complete R2 upload/read-back, checksum and semantic validation,
+fail-loud marker handling, and clean zero-state and non-empty restore rehearsals.
+
+Pilot Runtime SQLite Durability remains Prototype. Railway volume-specific
+encryption evidence, Railway snapshot schedules, and the R2 retention controls
+below remain pending; the successful deployment does not waive those gates.
 
 This deployment runs the Stage 5 storage guardian only. It proves the durable
 state, fail-loud, backup, and restore boundary. It is not a full Mission Control
@@ -112,9 +117,40 @@ AWS_ACCESS_KEY_ID=<r2-bucket-token-access-key>
 AWS_SECRET_ACCESS_KEY=<r2-bucket-token-secret>
 ```
 
+Normal startup now requires an explicit
+`MISSION_CONTROL_OFFSITE_ENDPOINT_URL`. This prevents an omitted R2 endpoint
+from silently sending the S3 client toward an unintended provider endpoint.
+The URL must use HTTPS and must not contain embedded credentials, a query, or a
+fragment.
+
 Do not enable multiple replicas. Railway documents that a service with a
 volume cannot use replicas, and SQLite remains approved only for one runtime
 writer.
+
+## Safe R2 troubleshooting
+
+The storage CLI reports a bounded failure category without copying provider
+response messages, endpoint credentials, or request data into logs. Use the
+category to choose the next check:
+
+- credentials missing, rejected, or expired: verify the sealed Railway
+  `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` values; rotate the
+  bucket-scoped token only after a new token is ready;
+- operation not permitted: verify that the R2 S3 token has Object Read & Write
+  permission for the configured bucket;
+- bucket not found: verify the exact bucket name, Cloudflare account, and any
+  jurisdiction-specific endpoint;
+- endpoint unreachable or TLS failure: verify the explicit HTTPS R2 endpoint
+  and Railway egress before changing credentials;
+- object-key conflict: choose a new `.sqlite3` backup name rather than
+  overwriting the existing recovery point; and
+- provider rate limit: preserve the local staging backup and retry with bounded
+  delay rather than issuing concurrent backup attempts.
+
+For a non-destructive live check, run `check` and then create one uniquely named
+`backup-offsite`. The latter uploads the object, reads the complete object back,
+verifies its SHA-256 metadata and bytes, and revalidates SQLite semantics before
+reporting success. It does not restore over the live database.
 
 ## Bootstrap and deployment acceptance
 
